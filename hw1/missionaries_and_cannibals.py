@@ -19,8 +19,8 @@ from random import randint
 
 
 class State(object):
-    def __init__(self, missionaries_left, cannibals_left):
-        self.current_action = None
+    def __init__(self, missionaries_left, cannibals_left, current_action = None):
+        self.current_action = current_action
         self.boat_size = 5
         self.nof_missionaries = 6
         self.nof_cannibals = 6
@@ -77,7 +77,8 @@ class State(object):
 
         """
         possible_states = []
-        self.current_action = "left" if action == "right" else "right"
+        """ self.current_action = "left" if action == "right" else "right" """
+        action = "left" if self.current_action == "right" else "right"
         if action == "left":
             for nof_passangers in range(1, self.boat_size + 1):
                 # 1C, 2C, 3C, 4C, 5C send
@@ -205,28 +206,30 @@ def nondeterministic_search(initial_state, path=[]):
     """
     if initial_state.is_goal():
         return [initial_state]
-    queue = deque([initial_state])
+    
     # use to switch between both rowing actions
     action_dict = {0: "left", 1: "right"}
     action_flag = 1
     # being used to avoid loops
     visited = set()
+    current_path = [initial_state]
+    queue = deque([current_path])
     while queue:
-        current_state = queue.popleft()
+        current_path = queue.popleft()
+        current_state = current_path[len(current_path)-1]
         visited.add(current_state)
-        path.append(current_state)
-        action_flag = not action_flag
         if current_state.is_goal():
-            return path
+            return current_path
         next_states = current_state.get_next(action_dict[action_flag])
         for next_state in next_states:
             if next_state in visited:
                 continue
+            current_path.append(next_state)
             random_idx = randint(0, len(queue))
             if random_idx < len(queue):
-                queue.insert(random_idx, next_state)
+                queue.insert(random_idx, current_path)
             else:
-                queue.append(next_state)
+                queue.append(current_path)
     # continue until a valid path reached
     return nondeterministic_search(initial_state, path)
 
@@ -253,7 +256,7 @@ def main():
     """
     CANNIBALS = 6
     MISSIONARIES = 6
-    initial_state = State(MISSIONARIES, CANNIBALS)
+    initial_state = State(MISSIONARIES, CANNIBALS, "right")
     path = nondeterministic_search(initial_state)
     print_solution(path)
 
