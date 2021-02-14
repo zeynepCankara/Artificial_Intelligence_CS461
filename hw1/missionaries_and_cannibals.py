@@ -19,8 +19,8 @@ from random import randint
 
 
 class State(object):
-    def __init__(self, missionaries_left, cannibals_left, current_action = None):
-        self.current_action = current_action
+    def __init__(self, missionaries_left, cannibals_left):
+        self.current_action = None
         self.boat_size = 5
         self.nof_missionaries = 6
         self.nof_cannibals = 6
@@ -77,8 +77,7 @@ class State(object):
 
         """
         possible_states = []
-        """ self.current_action = "left" if action == "right" else "right" """
-        action = "left" if self.current_action == "right" else "right"
+        self.current_action = "left" if action == "right" else "right"
         if action == "left":
             for nof_passangers in range(1, self.boat_size + 1):
                 # 1C, 2C, 3C, 4C, 5C send
@@ -218,6 +217,7 @@ def nondeterministic_search(initial_state, path=[]):
         current_path = queue.popleft()
         current_state = current_path[len(current_path)-1]
         visited.add(current_state)
+        action_flag = not action_flag
         if current_state.is_goal():
             return current_path
         next_states = current_state.get_next(action_dict[action_flag])
@@ -256,7 +256,7 @@ def main():
     """
     CANNIBALS = 6
     MISSIONARIES = 6
-    initial_state = State(MISSIONARIES, CANNIBALS, "right")
+    initial_state = State(MISSIONARIES, CANNIBALS)
     path = nondeterministic_search(initial_state)
     print_solution(path)
 
