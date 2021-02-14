@@ -19,8 +19,8 @@ from random import randint
 
 
 class State(object):
-    def __init__(self, missionaries_left, cannibals_left):
-        self.current_action = None
+    def __init__(self, missionaries_left, cannibals_left, action = None):
+        self.current_action = action
         self.boat_size = 5
         self.nof_missionaries = 6
         self.nof_cannibals = 6
@@ -59,7 +59,7 @@ class State(object):
 
         return True
 
-    def get_next(self, action):
+    def get_next(self):
         """Returns the possible next states from the given state
         Args:
             state: type(State), current state to take an action
@@ -77,13 +77,14 @@ class State(object):
 
         """
         possible_states = []
-        self.current_action = "left" if action == "right" else "right"
+        action = "right" if self.current_action == "left" else "left"
         if action == "left":
             for nof_passangers in range(1, self.boat_size + 1):
                 # 1C, 2C, 3C, 4C, 5C send
                 new_state = State(
                     self.missionaries_left,
                     self.cannibals_left - nof_passangers,
+                    action
                 )
                 if new_state.is_reachable():
                     possible_states.append(new_state)
@@ -92,6 +93,7 @@ class State(object):
                 new_state = State(
                     self.missionaries_left - nof_passangers,
                     self.cannibals_left,
+                    action
                 )
                 if new_state.is_reachable():
                     possible_states.append(new_state)
@@ -101,6 +103,7 @@ class State(object):
                 new_state = State(
                     self.missionaries_left - nof_passangers,
                     self.cannibals_left - nof_passangers,
+                    action
                 )
                 if new_state.is_reachable():
                     possible_states.append(new_state)
@@ -111,6 +114,7 @@ class State(object):
                 new_state = State(
                     self.missionaries_left,
                     self.cannibals_left + nof_passangers,
+                    action
                 )
                 if new_state.is_reachable():
                     possible_states.append(new_state)
@@ -119,6 +123,7 @@ class State(object):
                 new_state = State(
                     self.missionaries_left + nof_passangers,
                     self.cannibals_left,
+                    action
                 )
                 if new_state.is_reachable():
                     possible_states.append(new_state)
@@ -128,6 +133,7 @@ class State(object):
                 new_state = State(
                     self.missionaries_left + nof_passangers,
                     self.cannibals_left + nof_passangers,
+                    action
                 )
                 if new_state.is_reachable():
                     possible_states.append(new_state)
@@ -152,6 +158,7 @@ class State(object):
             and self.cannibals_left == other.cannibals_left
             and self.missionaries_right == other.missionaries_right
             and self.cannibals_right == other.cannibals_right
+            and self.current_action == other.current_action
         )
 
     def __hash__(self):
@@ -161,6 +168,7 @@ class State(object):
                 self.cannibals_left,
                 self.missionaries_right,
                 self.cannibals_right,
+                self.current_action
             )
         )
 
@@ -196,7 +204,7 @@ def get_state_change_log(current_state, next_state):
     return state_change
 
 
-def nondeterministic_search(initial_state, path=[]):
+def nondeterministic_search(initial_state):
     """Performs nondeterministic to find possible solutions to the problem
     Args:
         intitial_state: type(State), initial state
@@ -207,8 +215,8 @@ def nondeterministic_search(initial_state, path=[]):
         return [initial_state]
     
     # use to switch between both rowing actions
-    action_dict = {0: "left", 1: "right"}
-    action_flag = 1
+    # action_dict = {0: "left", 1: "right"}
+    # action_flag = 1
     # being used to avoid loops
     visited = set()
     current_path = [initial_state]
@@ -217,21 +225,22 @@ def nondeterministic_search(initial_state, path=[]):
         current_path = queue.popleft()
         current_state = current_path[len(current_path)-1]
         visited.add(current_state)
-        action_flag = not action_flag
+        # action_flag = not action_flag
         if current_state.is_goal():
             return current_path
-        next_states = current_state.get_next(action_dict[action_flag])
+        next_states = current_state.get_next()
         for next_state in next_states:
             if next_state in visited:
                 continue
             current_path.append(next_state)
             random_idx = randint(0, len(queue))
             if random_idx < len(queue):
-                queue.insert(random_idx, current_path)
+                queue.insert(random_idx, current_path.copy())
             else:
-                queue.append(current_path)
+                queue.append(current_path.copy())
+            current_path.remove(next_state)
     # continue until a valid path reached
-    return nondeterministic_search(initial_state, path)
+    return nondeterministic_search(initial_state)
 
 
 def print_solution(path):
@@ -256,7 +265,7 @@ def main():
     """
     CANNIBALS = 6
     MISSIONARIES = 6
-    initial_state = State(MISSIONARIES, CANNIBALS)
+    initial_state = State(MISSIONARIES, CANNIBALS, "right")
     path = nondeterministic_search(initial_state)
     print_solution(path)
 
