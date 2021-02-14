@@ -66,77 +66,32 @@ class State(object):
             action: type(str), action taken from the current state can be "left", "right"
         Returns:
             next states, type([State]), List of next possible reachable states
-
-        Notes on possible actions:
-        (Applicable to both side transitions)
-        1C, 2C, 3C, 4C, 5C send
-        -----------------------
-        (1C, 1M), (2C, 2M) send
-        -----------------------
-        1M, 2M, 3M, 4M, 5M send
-
         """
         possible_states = []
         action = "right" if self.current_action == "left" else "left"
         if action == "left":
             for nof_passangers in range(1, self.boat_size + 1):
-                # 1C, 2C, 3C, 4C, 5C send
-                new_state = State(
-                    self.missionaries_left,
-                    self.cannibals_left - nof_passangers,
-                    action
-                )
-                if new_state.is_reachable():
-                    possible_states.append(new_state)
-
-                # 1M, 2M, 3M, 4M, 5M send
-                new_state = State(
-                    self.missionaries_left - nof_passangers,
-                    self.cannibals_left,
-                    action
-                )
-                if new_state.is_reachable():
-                    possible_states.append(new_state)
-
-            for nof_passangers in range(1, 3):
-                # (1C, 1M), (2C, 2M) send
-                new_state = State(
-                    self.missionaries_left - nof_passangers,
-                    self.cannibals_left - nof_passangers,
-                    action
-                )
-                if new_state.is_reachable():
-                    possible_states.append(new_state)
+                for nof_cannibal_passengers in range(0, nof_passangers + 1):
+                    nof_missionary_passengers = nof_passangers - nof_cannibal_passengers
+                    new_state = State(
+                        self.missionaries_left - nof_missionary_passengers,
+                        self.cannibals_left - nof_cannibal_passengers,
+                        action
+                    )
+                    if new_state.is_reachable():
+                        possible_states.append(new_state)
 
         else:
             for nof_passangers in range(1, self.boat_size + 1):
-                # 1C, 2C, 3C, 4C, 5C return
-                new_state = State(
-                    self.missionaries_left,
-                    self.cannibals_left + nof_passangers,
-                    action
-                )
-                if new_state.is_reachable():
-                    possible_states.append(new_state)
-
-                # 1M, 2M, 3M, 4M, 5M return
-                new_state = State(
-                    self.missionaries_left + nof_passangers,
-                    self.cannibals_left,
-                    action
-                )
-                if new_state.is_reachable():
-                    possible_states.append(new_state)
-
-            for nof_passangers in range(1, 3):
-                # (1C, 1M), (2C, 2M) return
-                new_state = State(
-                    self.missionaries_left + nof_passangers,
-                    self.cannibals_left + nof_passangers,
-                    action
-                )
-                if new_state.is_reachable():
-                    possible_states.append(new_state)
+                for nof_cannibal_passengers in range(0, nof_passangers + 1):
+                    nof_missionary_passengers = nof_passangers - nof_cannibal_passengers
+                    new_state = State(
+                        self.missionaries_left + nof_missionary_passengers,
+                        self.cannibals_left + nof_cannibal_passengers,
+                        action
+                    )
+                    if new_state.is_reachable():
+                        possible_states.append(new_state)
         return possible_states
 
     def __repr__(self):
