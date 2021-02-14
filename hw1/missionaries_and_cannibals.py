@@ -218,13 +218,14 @@ def nondeterministic_search(initial_state):
     # action_dict = {0: "left", 1: "right"}
     # action_flag = 1
     # being used to avoid loops
-    visited = set()
     current_path = [initial_state]
     queue = deque([current_path])
     while queue:
+        visited = set()
         current_path = queue.popleft()
         current_state = current_path[len(current_path)-1]
-        visited.add(current_state)
+        for state in current_path:
+            visited.add(state)
         # action_flag = not action_flag
         if current_state.is_goal():
             return current_path
@@ -254,6 +255,7 @@ def print_solution(path):
         print(get_state_change_log(current, prev))
         prev = current
     print(prev)
+    print('Solution consists of ' + str(path_len - 1) + ' river crossings' )
 
 
 def main():
