@@ -213,7 +213,7 @@ def nondeterministic_search(initial_state):
     """
     if initial_state.is_goal():
         return [initial_state]
-    
+
     # use to switch between both rowing actions
     # action_dict = {0: "left", 1: "right"}
     # action_flag = 1
@@ -239,8 +239,6 @@ def nondeterministic_search(initial_state):
             else:
                 queue.append(current_path.copy())
             current_path.remove(next_state)
-    # continue until a valid path reached
-    return nondeterministic_search(initial_state)
 
 
 def print_solution(path):
