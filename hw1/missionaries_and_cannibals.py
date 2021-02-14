@@ -52,8 +52,8 @@ class State(object):
             return False
         # number of cannibals can't exceed number of missionaries in either side
         if (
-            self.cannibals_left > self.missionaries_left
-            or self.cannibals_right > self.missionaries_right
+            (self.missionaries_left != 0 and self.cannibals_left > self.missionaries_left)
+            or (self.missionaries_right != 0 and self.cannibals_right > self.missionaries_right)
         ):
             return False
 
