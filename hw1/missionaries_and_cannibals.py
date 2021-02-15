@@ -17,9 +17,12 @@ from collections import deque
 # random number generator for the nondeterministic search
 from random import randint
 
+# run trace mode
+import argparse
+
 
 class State(object):
-    def __init__(self, missionaries_left, cannibals_left, action = None):
+    def __init__(self, missionaries_left, cannibals_left, action=None):
         self.current_action = action
         self.boat_size = 5
         self.nof_missionaries = 6
@@ -52,8 +55,10 @@ class State(object):
             return False
         # number of cannibals can't exceed number of missionaries in either side
         if (
-            (self.missionaries_left != 0 and self.cannibals_left > self.missionaries_left)
-            or (self.missionaries_right != 0 and self.cannibals_right > self.missionaries_right)
+            self.missionaries_left != 0 and self.cannibals_left > self.missionaries_left
+        ) or (
+            self.missionaries_right != 0
+            and self.cannibals_right > self.missionaries_right
         ):
             return False
 
@@ -76,7 +81,7 @@ class State(object):
                     new_state = State(
                         self.missionaries_left - nof_missionary_passengers,
                         self.cannibals_left - nof_cannibal_passengers,
-                        action
+                        action,
                     )
                     if new_state.is_reachable():
                         possible_states.append(new_state)
@@ -88,7 +93,7 @@ class State(object):
                     new_state = State(
                         self.missionaries_left + nof_missionary_passengers,
                         self.cannibals_left + nof_cannibal_passengers,
-                        action
+                        action,
                     )
                     if new_state.is_reachable():
                         possible_states.append(new_state)
@@ -123,7 +128,7 @@ class State(object):
                 self.cannibals_left,
                 self.missionaries_right,
                 self.cannibals_right,
-                self.current_action
+                self.current_action,
             )
         )
 
@@ -178,7 +183,7 @@ def nondeterministic_search(initial_state):
     while queue:
         visited = set()
         current_path = queue.popleft()
-        current_state = current_path[len(current_path)-1]
+        current_state = current_path[len(current_path) - 1]
         for state in current_path:
             visited.add(state)
         # action_flag = not action_flag
@@ -197,6 +202,33 @@ def nondeterministic_search(initial_state):
             current_path.remove(next_state)
 
 
+def trace_solution(path):
+    """Helps users to trace program from keyboard
+    Args:
+        path: type([State]) List of states obtained via nondeterministic search
+    """
+    idx = 0
+    while True:
+        key = input()
+        if key == "d":
+            idx += 1
+            if idx >= len(path):
+                print("index out of bounds, press (a) to go back")
+                continue
+            print(path[idx])
+        elif key == "a":
+            idx -= 1
+            if idx < 0:
+                print("index out of bounds, press (d) to advance")
+                continue
+            print(path[idx])
+        elif key == "q":
+            print("exit trace mode")
+            return
+        else:
+            print("press a valid key (d): advance, (a): go back")
+
+
 def print_solution(path):
     """Prints the solution from the given
     Args:
@@ -210,10 +242,10 @@ def print_solution(path):
         print(get_state_change_log(current, prev))
         prev = current
     print(prev)
-    print('Solution consists of ' + str(path_len - 1) + ' river crossings' )
+    print("Solution consists of " + str(path_len - 1) + " river crossings")
 
 
-def main():
+def main(trace):
     """
     TODO(zcankara): Explain the problem
     TODO(zcankara): Add stepping argument
@@ -222,8 +254,16 @@ def main():
     MISSIONARIES = 6
     initial_state = State(MISSIONARIES, CANNIBALS, "right")
     path = nondeterministic_search(initial_state)
-    print_solution(path)
+    if trace:
+        trace_solution(path)
+    else:
+        print_solution(path)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Create a tracing flag")
+    parser.add_argument(
+        "--trace", metavar="path", required=False, help="tracing option for the program"
+    )
+    args = parser.parse_args()
+    main(trace=args.trace)
