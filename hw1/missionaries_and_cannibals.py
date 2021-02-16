@@ -1,6 +1,10 @@
 """
 @Date: 13/02/2021 ~ Version: 1.0
-@Authors:...
+@Author: Ahmet Feyzi Halaç
+@Author: Aybars Altınışık
+@Author: Göktuğ Gürbüztürk
+@Author: Zeynep Cankara
+@Author: Ege Şahin
 
 @Description: A version of the missionaries and cannibals problem.
               ~ Non-deterministic search
