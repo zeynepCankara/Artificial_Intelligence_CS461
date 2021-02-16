@@ -202,7 +202,7 @@ def get_short_log(state):
     It is denoted by three consecutive integers like: 660
     First integer denotes the number of missionaries on the left side of the river
     Second integer denotes the number of cannibals on the left side of the river
-    Third integer denotes the positon of boat (0 if it is on the left side of the river, 1 otherwise
+    Third integer denotes the positon of boat (0 if it is on the left side of the river, 1 otherwise)
     """
 
     return str(state.missionaries_left) + str(state.cannibals_left) + ('0' if state.current_action == 'right' else '1')
@@ -235,6 +235,15 @@ def nondeterministic_search(initial_state, traceMode = False):
 
     # queue for the search
     queue = deque([current_path])
+
+    if ( traceMode ):
+        print('You are in tracing mode. At every iteration, current content of the queue, first path in the queue')
+        print('and new paths extending the first path will be prompted.\n')
+        print('Every state will be represented with three numbers:')
+        print('First one denotes the number of missionaries on the left side of the river')
+        print('Second one denotes the number of cannibals on the left side of the river')
+        print('Third one denotes the positon of boat (0 if it is on the left side of the river, 1 otherwise)\n')
+        print('To continue iteration, press Enter and to terminate trace mode, enter q\n')
 
     # if there are states not yet covered, continue to the loop
     while queue:
