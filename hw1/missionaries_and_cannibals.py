@@ -275,7 +275,8 @@ def nondeterministic_search(initial_state, traceMode = False):
 
             # add state to the current path
             current_path.append(next_state)
-            print(get_path_log(current_path, '-'))
+            if ( traceMode ):
+                print(get_path_log(current_path, '-'))
 
             # random is found to obtain a nondeterministic approach
             random_idx = randint(0, len(queue))
@@ -286,8 +287,11 @@ def nondeterministic_search(initial_state, traceMode = False):
             else:
                 queue.append(current_path.copy())
             current_path.remove(next_state)
-        input()
-        print('-' * 10)
+        if ( traceMode ):
+            quit = input('\nEnter q for quit, press Enter to continue tracing: ')
+            if ( quit == 'q' ):
+                traceMode = False
+            print('-' * 10)
 
 def trace_solution(path):
     """Helps users to trace program from keyboard
@@ -340,8 +344,8 @@ def main(trace):
     CANNIBALS = 6
     MISSIONARIES = 6
     initial_state = State(MISSIONARIES, CANNIBALS, "right")
-    traceMode = True
-    path = nondeterministic_search(initial_state, traceMode)
+    traceMode = input('Enter 1 for trace mode, 0 otherwise: ')
+    path = nondeterministic_search(initial_state, traceMode == '1')
     if trace:
         trace_solution(path)
     else:
