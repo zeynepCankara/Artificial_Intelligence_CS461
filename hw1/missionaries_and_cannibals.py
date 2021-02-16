@@ -6,10 +6,6 @@
               ~ Non-deterministic search
 """
 
-# data science related
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # queue for the nondeterministic search
 from collections import deque
@@ -180,8 +176,24 @@ def get_state_change_log(current_state, next_state):
 
     return state_change
 
+def get_short_log(state):
+    """Returns the short representation of a state
 
-def nondeterministic_search(initial_state):
+    It is denoted by three consecutive integers like: 660
+    First integer denotes the number of missionaries on the left side of the river
+    Second integer denotes the number of cannibals on the left side of the river
+    Third integer denotes the positon of boat (0 if it is on the left side of the river, 1 otherwise
+    """
+
+    return str(state.missionaries_left) + str(state.cannibals_left) + ('0' if state.current_action == 'right' else '1')
+    
+
+def get_path_log(path, seperator):
+    """Returns the string representation of a path with a seperator
+    """
+    return seperator.join(map(lambda state: get_short_log(state), path))
+
+def nondeterministic_search(initial_state, traceMode = False):
     """Performs nondeterministic to find possible solutions to the problem
     Args:
         intitial_state: type(State), initial state
@@ -198,26 +210,37 @@ def nondeterministic_search(initial_state):
     current_path = [initial_state]
     queue = deque([current_path])
     while queue:
+        if ( traceMode ):
+            print('Current queue:')
+            for path in queue:
+                print(get_path_log(path, '-'))
         visited = set()
         current_path = queue.popleft()
         current_state = current_path[len(current_path) - 1]
+        if ( traceMode ):
+            print('\nFirst path of queue: ' + get_path_log(current_path, '-'))
         for state in current_path:
             visited.add(state)
-        # action_flag = not action_flag
-        if current_state.is_goal():
+        if current_state.is_goal() and len(current_path) <= 8:
+            if ( traceMode ):
+                print('Goal path is found: ' + get_path_log(path, '-'))
             return current_path
         next_states = current_state.get_next()
+        if ( traceMode ):
+            print('\nNew paths extending the first path:')
         for next_state in next_states:
             if next_state in visited:
                 continue
             current_path.append(next_state)
+            print(get_path_log(current_path, '-'))
             random_idx = randint(0, len(queue))
             if random_idx < len(queue):
                 queue.insert(random_idx, current_path.copy())
             else:
                 queue.append(current_path.copy())
             current_path.remove(next_state)
-
+        input()
+        print('-' * 10)
 
 def trace_solution(path):
     """Helps users to trace program from keyboard
@@ -270,7 +293,8 @@ def main(trace):
     CANNIBALS = 6
     MISSIONARIES = 6
     initial_state = State(MISSIONARIES, CANNIBALS, "right")
-    path = nondeterministic_search(initial_state)
+    traceMode = True
+    path = nondeterministic_search(initial_state, traceMode)
     if trace:
         trace_solution(path)
     else:
