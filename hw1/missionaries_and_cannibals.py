@@ -194,7 +194,13 @@ def get_path_log(path, seperator):
     return seperator.join(map(lambda state: get_short_log(state), path))
 
 def nondeterministic_search(initial_state, traceMode = False):
-    """Performs nondeterministic to find possible solutions to the problem
+    """Performs nondeterministic to find possible solutions to the problem. In our implementation we continue to search until 
+       finding the path or making queue empty. At first, we are giving the initial state to add the first path to queue. 
+       If it is a goal state, nondeterministic search is completed with a success. Otherwise the other paths are added to random locations
+       of the queue one by one in each iteration. At this point, visited states are marked to prevent loops in the paths.
+       Also, in each iteration the first element of the queue is examined. If the path does not finish with the goal state, 
+       the path is removed from the queue. If it terminates with the goal state, the search is completed with success and 
+       the current path is returned from the function.
     Args:
         intitial_state: type(State), initial state
     Returns:
