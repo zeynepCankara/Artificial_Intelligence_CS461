@@ -20,24 +20,30 @@ from random import randint
 # run trace mode
 import argparse
 
+""" Every object of this class keeps a state information
+    which can be achieved by a boat action.
+    State represents the number of the cannibals and missionaires
+    with their locations as "right" or "left".
 
+    Attributes:
+        current_action: type(string), Information of the location of the boat; "right" or "left"
+        boat_size: type(int), Size of the boat
+        nof_missionaries: type(int), Total number of missionaries
+        nof_cannibals: type(int), Total number of cannibals
+        missionaries_left: type(int), Number of missionaries in the left
+        cannibals_left: type(int), Number of cannibals in the left
+        missionaries_right: type(int), Number of missionaries in the right
+        cannibals_right: type(int), Number of cannibals in the right
+"""
 class State(object):
     def __init__(self, missionaries_left, cannibals_left, action=None):
-        # Information of the location of the boat; "right" or "left"
         self.current_action = action
-        # Size of the boat
         self.boat_size = 5
-        # Total number of missionaries
         self.nof_missionaries = 6
-        # Total number of cannibals
         self.nof_cannibals = 6
-        # Number of missionaries in the left
         self.missionaries_left = missionaries_left
-        # Number of cannibals in the left
         self.cannibals_left = cannibals_left
-        # Number of missionaries in the right
         self.missionaries_right = self.nof_missionaries - missionaries_left
-        # Number of cannibals in the right
         self.cannibals_right = self.nof_cannibals - cannibals_left
 
     def is_goal(self):
