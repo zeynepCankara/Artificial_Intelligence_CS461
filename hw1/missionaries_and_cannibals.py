@@ -45,7 +45,7 @@ class State(object):
             type(bool), True if the state is reachable False otherwise
         """
 
-        # condition on number of missionaries and cannibals
+        # Constraints on number of missionaries and cannibals
         if (
             self.missionaries_left < 0
             or self.cannibals_left < 0
@@ -53,7 +53,7 @@ class State(object):
             or self.cannibals_left > self.nof_cannibals
         ):
             return False
-        # number of cannibals can't exceed number of missionaries in either side
+        # Number of cannibals can't exceed number of missionaries in either side
         if (
             self.missionaries_left != 0 and self.cannibals_left > self.missionaries_left
         ) or (
@@ -66,14 +66,15 @@ class State(object):
 
     def get_next(self):
         """Returns the possible next states from the given state
-        Args:
-            state: type(State), current state to take an action
-            action: type(str), action taken from the current state can be "left", "right"
         Returns:
             next states, type([State]), List of next possible reachable states
         """
         possible_states = []
-        action = "right" if self.current_action == "left" else "left"
+        action = "right" if self.current_action == "left" else "left" # Next Action is the reverse of current action
+        """
+            According to the value of action, these if-else and nested for loops try each possible combination of missionaries and 
+            cannibals and create a new state. If this state is reacbale it is appended to the possible_state.
+        """
         if action == "left":
             for nof_passangers in range(1, self.boat_size + 1):
                 for nof_cannibal_passengers in range(0, nof_passangers + 1):
@@ -103,6 +104,10 @@ class State(object):
         return "State()"
 
     def __str__(self):
+        """This function set the output to specific format
+        Returns:
+            type(str), formatted string
+        """
         state_str = "{0:6s} {1:6s} {2:6s}".format(
             "C" * self.cannibals_left, "  " * 9, "C" * self.cannibals_right
         )
@@ -113,6 +118,12 @@ class State(object):
         return state_str
 
     def __eq__(self, other):
+        """This function checks two state for equality
+        Args:
+            other: type(State), state to be compared
+        Returns:
+            type(bool) true if they are equal, false otherwise
+        """
         return (
             self.missionaries_left == other.missionaries_left
             and self.cannibals_left == other.cannibals_left
@@ -134,7 +145,13 @@ class State(object):
 
 
 def get_state_change_log(current_state, next_state):
-    """Returns the string representation of state transition"""
+    """Returns the string representation of state transition
+    Args:
+        current_state: type(State) that will be used to decide how many missionaries and cannibals will be send/return
+        next_state: type(State) that will be used to decide how many missionaries and cannibals will be send/return
+    Returns:
+        type(bool) true if they are equal, false otherwise
+    """
     action = (
         "SEND"
         if (
