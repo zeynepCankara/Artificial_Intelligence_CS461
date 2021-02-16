@@ -19,13 +19,21 @@ import argparse
 
 class State(object):
     def __init__(self, missionaries_left, cannibals_left, action=None):
+        # Information of the location of the boat; "right" or "left"
         self.current_action = action
+        # Size of the boat
         self.boat_size = 5
+        # Total number of missionaries
         self.nof_missionaries = 6
+        # Total number of cannibals
         self.nof_cannibals = 6
+        # Number of missionaries in the left
         self.missionaries_left = missionaries_left
+        # Number of cannibals in the left
         self.cannibals_left = cannibals_left
+        # Number of missionaries in the right
         self.missionaries_right = self.nof_missionaries - missionaries_left
+        # Number of cannibals in the right
         self.cannibals_right = self.nof_cannibals - cannibals_left
 
     def is_goal(self):
@@ -129,6 +137,14 @@ class State(object):
         )
 
     def __hash__(self):
+        """This function calculates an hash number from the 
+        properties indicated. Hash can be used in comparison
+        of two instances.
+        Args:
+            other: type(State)
+        Returns:
+            type(int) hash number
+        """
         return hash(
             (
                 self.missionaries_left,
@@ -200,40 +216,65 @@ def nondeterministic_search(initial_state, traceMode = False):
     Returns:
         path: type([State]) list of states that visited throughout the search routine
     """
+    # return if initial_state is the goal
     if initial_state.is_goal():
         return [initial_state]
 
-    # use to switch between both rowing actions
-    # action_dict = {0: "left", 1: "right"}
-    # action_flag = 1
-    # being used to avoid loops
+    # path to be added in the queue
     current_path = [initial_state]
+
+    # queue for the search
     queue = deque([current_path])
+
+    # if there are states not yet covered, continue to the loop
     while queue:
+        # trace mode
         if ( traceMode ):
             print('Current queue:')
             for path in queue:
                 print(get_path_log(path, '-'))
+
+        # visited is the set to keep states that has been visited.
+        # it helps the algorithm to not get into the loop.
         visited = set()
         current_path = queue.popleft()
         current_state = current_path[len(current_path) - 1]
+
+        # trace mode
         if ( traceMode ):
             print('\nFirst path of queue: ' + get_path_log(current_path, '-'))
+
+        # add each state to visited in the path
         for state in current_path:
             visited.add(state)
+
+        # return if current_state is the goal
         if current_state.is_goal() and len(current_path) <= 8:
+            # trace mode
             if ( traceMode ):
                 print('Goal path is found: ' + get_path_log(path, '-'))
             return current_path
+            
+        # calculate next states that can be achived after current state
         next_states = current_state.get_next()
+
+        # trace mode
         if ( traceMode ):
             print('\nNew paths extending the first path:')
+        
         for next_state in next_states:
+            # avoids loop by checking visited set
             if next_state in visited:
                 continue
+
+            # add state to the current path
             current_path.append(next_state)
             print(get_path_log(current_path, '-'))
+
+            # random is found to obtain a nondeterministic approach
             random_idx = randint(0, len(queue))
+            
+            # inster path to queue randomly
             if random_idx < len(queue):
                 queue.insert(random_idx, current_path.copy())
             else:
