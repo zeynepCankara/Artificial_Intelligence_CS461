@@ -10,9 +10,9 @@
     - 6 missionaires and 6 cannibals with a boat size of 5.
     - with Non-deterministic search routine
     - Run the program via: python3 missionaries_and_cannibals.py
+    - you can enable tracing via passing --trace flag (True / False)
 
 """
-
 
 # queue for the nondeterministic search
 from collections import deque
@@ -338,33 +338,6 @@ def nondeterministic_search(initial_state, traceMode=False):
             print("-" * 10)
 
 
-def trace_solution(path):
-    """Helps users to trace program from keyboard
-    Args:
-        path: type([State]) List of states obtained via nondeterministic search
-    """
-    idx = 0
-    while True:
-        key = input()
-        if key == "d":
-            idx += 1
-            if idx >= len(path):
-                print("index out of bounds, press (a) to go back")
-                continue
-            print(path[idx])
-        elif key == "a":
-            idx -= 1
-            if idx < 0:
-                print("index out of bounds, press (d) to advance")
-                continue
-            print(path[idx])
-        elif key == "q":
-            print("exit trace mode")
-            return
-        else:
-            print("press a valid key (d): advance, (a): go back")
-
-
 def print_solution(path):
     """Prints the solution from the given path
     Args:
@@ -386,18 +359,20 @@ def main(trace):
     CANNIBALS = 6
     MISSIONARIES = 6
     initial_state = State(MISSIONARIES, CANNIBALS, "right")
-    traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
-    path = nondeterministic_search(initial_state, traceMode == "1")
-    if trace:
-        trace_solution(path)
-    else:
-        print_solution(path)
+    traceMode = "0"
+    if trace != "1":
+        traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
+    path = nondeterministic_search(initial_state, (traceMode == "1" or trace == "1"))
+    print_solution(path)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Create a tracing flag")
     parser.add_argument(
-        "--trace", metavar="path", required=False, help="tracing option for the program"
+        "--trace",
+        metavar="path",
+        required=False,
+        help="tracing option for the program ('1': True / '0': False)",
     )
     args = parser.parse_args()
     main(trace=args.trace)
