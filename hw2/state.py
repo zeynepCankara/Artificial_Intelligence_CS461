@@ -60,7 +60,7 @@ class State(object):
 
     def up(self, change = False):
         if not change:
-            state = copy.copy(self)
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -76,7 +76,7 @@ class State(object):
 
     def down(self, change = False):
         if not change:
-            state = self.copy()
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -92,7 +92,7 @@ class State(object):
 
     def right(self, change = False):
         if not change:
-            state = self.copy()
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -108,7 +108,7 @@ class State(object):
 
     def left(self, change = False):
         if not change:
-            state = self.copy()
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -119,7 +119,7 @@ class State(object):
             return False
 
         state.swap(state.blank_row, state.blank_column, row, column)
-        return True
+        return state
 
 
     def swap(self, row1, column1, row2, column2):
@@ -192,16 +192,43 @@ class State(object):
         print()
 
 
-    def copy(self):
-        copy = State()
-        copy.array = self.array.copy()
-        copy.blank_column = self.blank_column
-        copy.blank_row = self.blank_row
-        copy.goal_state = self.goal_state
-        copy.size = self.size
+    def beam_search(self, w):
+        # TODO complete
+        if self.is_goal():
+            return self
+        if w == 0:
+            return False
+        counter = w
+        candidates = []
+        possible_states = self.get_next()
 
-        return copy
+        for state in possible_states:
+            if counter == 0:
+                max = 0
+                heuristic = state.manhattan()
+                for candidate in candidates:
+                    if candidate.manhattan() > max:
+                        max = candidate.manhattan()
+                        max_state = candidate
+                if heuristic < max:
+                    candidates.remove(candidate)
+                    candidates.append(state)
+            else:
+                candidates.append(state)
+        
+        for candidate in candidates:
+            return candidate.beam_search(w)
 
+    def shuffle(self):
+        # TODO
+        self.up()
+        self.left()
+        self.left()
+        self.down()
+        self.right()
+        self.up()
+        self.up()
+        self.right()
 
     def __str__(self):
         """String representation of the state
