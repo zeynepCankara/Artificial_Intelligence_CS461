@@ -1,6 +1,14 @@
 from tkinter import * 
 from parsePuzzle import parsePuzzle
 
+def showAnswers(boxList):
+    i = 0
+    for cell in puzzleInformation['cells']:
+        if(cell["cellNumber"] != -1):
+            boxList[i].config(text = cell['letter'])
+            boxList[i].config(anchor = "c")
+        i += 1
+       
 puzzleInformation = parsePuzzle()
 
 # creating main tkinter window/toplevel 
@@ -33,21 +41,23 @@ for clueNumber, clue in puzzleInformation['downClues'].items():
     j += 1
 
 # Creating puzzle Information
-i = 0
+k = 0
 boxList = []
 for cell in puzzleInformation['cells']:
     if(cell["cellNumber"] == -1):
-        boxList.append(Label(master, bg="black", borderwidth=2, relief="ridge", height=5, width=10))
+        boxList.append(Label(master, bg="black", borderwidth=4, relief="solid", height=5, width=10))
     else:
         if(cell["cellNumber"] != 0):
-            boxList.append(Label(master, bg="white", borderwidth=2, relief="solid", height=5, width=10, text = cell['cellNumber'], anchor = "nw"))
+            boxList.append(Button(master, bg="white", relief="solid", height=5, width=10, text = cell['cellNumber'], anchor = "nw"))
         else:
-            boxList.append(Label(master, bg="white", borderwidth=2, relief="solid", height=5, width=10))
-    boxList[i].grid(row = (int(i / 5) * 3), column = (i % 5), rowspan = 3)
-    print(int(i / 5) * 4)
-    i += 1    
+            boxList.append(Button(master, bg="white", relief="solid", height=5, width=10))
+    boxList[k].grid(row = (int(k / 5) * 3), column = (k % 5), rowspan = 3)
+    #print(int(i / 5) * 3)
+    k += 1
+    
+# Button for showing actions
+button1 = Button(master, bg="white", relief="solid", text = "Click for Anwers", command=lambda: showAnswers(boxList))
+button1.grid(row = i + 3, column = 5, pady = 10)
   
 mainloop() 
 
-
-#If you want a border, the option is borderwidth. You can also choose the relief of the border: "flat", "raised", "sunken", "ridge", "solid", and "groove".
