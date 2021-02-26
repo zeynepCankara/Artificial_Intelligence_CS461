@@ -4,30 +4,30 @@ from parsePuzzle import parsePuzzle
 puzzleInformation = parsePuzzle()
 
 # creating main tkinter window/toplevel 
-master = Tk() 
+master = Tk()
 
 # Creating Title of Across Clues
-l0 = Label(master, text = "Across clues:")
-l0.grid(row = 0, column = 5, rowspan = 1)
+l0 = Label(master, text = "ACROSS", font = 'franklin 12 bold')
+l0.grid(row = 0, column = 5, rowspan = 1, sticky = W)
 
 # Creating Across Clues
 i = 0
 acrossClues = []
 for clueNumber, clue in puzzleInformation['acrossClues'].items():
-    acrossClues.append(Label(master, text = (clueNumber, clue)))
+    acrossClues.append(Label(master, text = '%d. %s' % (clueNumber, clue), font = 'franklin 10'))
     acrossClues[i].grid(row = i + 1, column = 5, sticky = W, rowspan = 1)
     i += 1
 
 # Creating Title of Down Clues
-i += 1
-l1 = Label(master, text = "Down clues:")
-l1.grid(row = i, column = 5, rowspan = 1)
+i += 3
+l1 = Label(master, text = "DOWN", font = 'franklin 12 bold')
+l1.grid(row = i, column = 5, rowspan = 1, sticky = W)
 
 # Creating Down Clues
 downClues = []
 j = 0
 for clueNumber, clue in puzzleInformation['downClues'].items():
-    downClues.append(Label(master, text = (clueNumber, clue)))
+    downClues.append(Label(master, text = '%d. %s' % (clueNumber, clue), font = 'franklin 10'))
     downClues[j].grid(row = i + 1, column = 5, sticky = W, rowspan = 1)
     i += 1
     j += 1
