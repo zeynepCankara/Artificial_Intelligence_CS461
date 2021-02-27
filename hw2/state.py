@@ -1,5 +1,11 @@
 import copy
 
+# for the breadth-first-search
+from collections import deque
+
+# random number generator for the bredth first search
+from random import randint
+
 
 class State(object):
     def __init__(self):
@@ -31,10 +37,10 @@ class State(object):
         return self.blank_row > 0
 
     def left_reachable(self):
-        return self.blank_col > 0
+        return self.blank_column > 0
 
     def right_reachable(self):
-        return self.blank_col < self.size - 1
+        return self.blank_column < self.size - 1
 
     def get_next(self):
         """Returns the possible next states from the given state
@@ -43,14 +49,14 @@ class State(object):
         """
         possible_states = []
 
-        if self.up_reachable():
+        if self.up_reachable() == True:
             possible_states.append(self.up())
-        if self.down_reachable():
+        if self.down_reachable() == True:
             possible_states.append(self.down())
-        if self.right_reachable():
+        if self.right_reachable() == True:
             possible_states.append(self.right())
-        if self.left_reachable():
-            possible_states.append(self.down())
+        if self.left_reachable() == True:
+            possible_states.append(self.left())
 
         return possible_states
 
@@ -58,7 +64,7 @@ class State(object):
         if self.up_reachable() == False:
             raise Exception("Error: Can't move up!")
         if inplace == False:
-            state = copy.copy(self)
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -66,18 +72,20 @@ class State(object):
         column = state.blank_column
 
         state.swap(state.blank_row, state.blank_column, row, column)
-        self.blank_row -= 1
+        # update the blank space position
+        state.blank_row -= 1
 
-        return None if inplace == False else state
+        return None if inplace == True else state
 
     def down(self, inplace=False):
         """
-        Modifies the state array
+        Move down action
+        Params: inplace, type(bool): modifies the grid in place
         """
         if self.down_reachable() == False:
             raise Exception("Error: Can't move down!")
         if inplace == False:
-            state = copy.copy(self)
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -85,14 +93,15 @@ class State(object):
         column = state.blank_column
 
         state.swap(state.blank_row, state.blank_column, row, column)
-        self.blank_row += 1
-        return None if inplace == False else state
+        # update the blank space position
+        state.blank_row += 1
+        return None if inplace == True else state
 
     def right(self, inplace=False):
         if self.right_reachable() == False:
             raise Exception("Error: Can't right down!")
         if inplace == False:
-            state = copy.copy(self)
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -100,14 +109,15 @@ class State(object):
         column = state.blank_column + 1
 
         state.swap(state.blank_row, state.blank_column, row, column)
-        self.blank_column += 1
-        return None if inplace == False else state
+        # update the blank space position
+        state.blank_column += 1
+        return None if inplace == True else state
 
     def left(self, inplace=False):
         if self.left_reachable() == False:
             raise Exception("Error: Can't left down!")
         if inplace == False:
-            state = copy.copy(self)
+            state = copy.deepcopy(self)
         else:
             state = self
 
@@ -115,10 +125,13 @@ class State(object):
         column = state.blank_column - 1
 
         state.swap(state.blank_row, state.blank_column, row, column)
-        self.blank_column -= 1
-        return None if inplace == False else state
+        # update the blank space position
+        state.blank_column -= 1
+        return None if inplace == True else state
 
     def swap(self, row1, column1, row2, column2):
+        """ Swaps two positions in the grid
+        """
         temp = self.array[row1][column1]
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
@@ -242,7 +255,7 @@ class State(object):
         Returns:
             type(bool) true if they are equal, false otherwise
         """
-        return self.array == other.array
+        return str(self.array) == str(other.array)
 
     def __hash__(self):
         """Calculates an hash number from the properties indicated.
@@ -250,8 +263,51 @@ class State(object):
         Returns:
             type(int) hash number
         """
-        return hash(
-            (
-                self.array
-            )
-        )
+        return hash(str(self.array))
+
+
+class PuzzleGenerator(object):
+    def __init__(self):
+        """PuzzleGenerator constructor
+        Attributes:
+        """
+        self.puzzles = set()
+        self.actions = {1: "left", 2: "down", 3: "right", 4: "down"}
+
+    def shuffle(self, state):
+        """Shuffles the given state
+        Returns:
+            state: type(State) shuffled state
+        """
+        queue = deque([state])
+        self.visited = set()
+        initial_state = state
+        while queue:
+            state = queue.popleft()
+            self.visited.add(state)
+            if state.is_goal() == False and state != initial_state:
+                return state
+            states = state.get_next()
+            for next_state in states:
+                if next_state not in self.visited:
+                    # random selection of next states
+                    random_idx = randint(0, len(queue))
+                    # insert to queue randomly
+                    if random_idx < len(queue):
+                        queue.insert(random_idx, next_state)
+                    else:
+                        queue.append(next_state)
+
+    def generate(self):
+        """
+        Randomly generates 3 distinct states.
+        Returns:
+            type(tuple(State)), 3 distinct states
+        """
+        state = State()
+        while len(self.puzzles) < 3:
+            print(state)
+            state = self.shuffle(state)
+            if state not in self.puzzles:
+                self.puzzles.add(state)
+        return self.puzzles

@@ -12,7 +12,7 @@
 """
 import copy
 import state
-from state import State
+from state import State, PuzzleGenerator
 
 
 def main():
@@ -25,9 +25,12 @@ def main():
                   [3, 4, 3, 2],
                   [4, 3, 2, 0]]
     state = initial_state
-    while state.up_reachable():
-        print(state)
-        state.up(inplace=True)
+    puzzle_generator = PuzzleGenerator()
+    state = puzzle_generator.shuffle(state)
+    print(state)
+    state = puzzle_generator.shuffle(state)
+    print(state)
+    state = puzzle_generator.shuffle(state)
     print(state)
     """
     print(initial_state.array == goal_state)
