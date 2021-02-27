@@ -26,9 +26,8 @@ def main():
                   [4, 3, 2, 0]]
     state = initial_state
     puzzle_generator = PuzzleGenerator()
-    puzzles = puzzle_generator.generate(3)
-    for puzzle in puzzles:
-        print(puzzle)
+    print(puzzle_generator)
+
     """
     print(initial_state.array == goal_state)
     a = initial_state.get_next()
