@@ -1,28 +1,18 @@
 import copy
 
+
 class State(object):
     def __init__(self):
         """State constructor
-        Every object of this class keeps a state information
-        which can be achieved by a boat action.
-        State represents the number of the cannibals and missionaires
-        with their locations as "right" or "left".
-        Args:
-            missionaries_left: type(int), number of missionaries on the left side of the river
-            cannibals_left: type(int), number of cannibals on the left side of the river
-            action: type(str), direction of the boat heading to ('left' or 'right').
-        Attributes:
-            current_action: type(string), Information of the location of the boat; "right" or "left"
-            boat_size: type(int), Size of the boat
-            nof_missionaries: type(int), Total number of missionaries
-            nof_cannibals: type(int), Total number of cannibals
-            missionaries_left: type(int), Number of missionaries in the left
-            cannibals_left: type(int), Number of cannibals in the left
-            missionaries_right: type(int), Number of missionaries in the right
-            cannibals_right: type(int), Number of cannibals in the right
         """
-        self.goal_state = [[1,2,3,4], [2,3,4,3], [3,4,3,2], [4,3,2,0]]
-        self.array = [[1,2,3,4], [2,3,4,3], [3,4,3,2], [4,3,2,0]]
+        self.goal_state = [[1, 2, 3, 4],
+                           [2, 3, 4, 3],
+                           [3, 4, 3, 2],
+                           [4, 3, 2, 0]]
+        self.array = [[1, 2, 3, 4],
+                      [2, 3, 4, 3],
+                      [3, 4, 3, 2],
+                      [4, 3, 2, 0]]
         self.blank_row = 3
         self.blank_column = 3
         self.size = 4
@@ -34,6 +24,18 @@ class State(object):
         """
         return self.array == self.goal_state
 
+    def down_reachable(self):
+        return self.blank_row < self.size - 1
+
+    def up_reachable(self):
+        return self.blank_row > 0
+
+    def left_reachable(self):
+        return self.blank_col > 0
+
+    def right_reachable(self):
+        return self.blank_col < self.size - 1
+
     def get_next(self):
         """Returns the possible next states from the given state
         Returns:
@@ -41,101 +43,95 @@ class State(object):
         """
         possible_states = []
 
-        up_state = self.up()
-        down_state = self.down()
-        right_state = self.right()
-        left_state = self.left()
-
-        if up_state:
-            possible_states.append(up_state)
-        if down_state:
-            possible_states.append(down_state)
-        if right_state:
-            possible_states.append(right_state)
-        if left_state:
-            possible_states.append(left_state)
+        if self.up_reachable():
+            possible_states.append(self.up())
+        if self.down_reachable():
+            possible_states.append(self.down())
+        if self.right_reachable():
+            possible_states.append(self.right())
+        if self.left_reachable():
+            possible_states.append(self.down())
 
         return possible_states
 
-
-    def up(self, change = False):
-        if not change:
-            state = copy.deepcopy(self)
+    def up(self, inplace=False):
+        if self.up_reachable() == False:
+            raise Exception("Error: Can't move up!")
+        if inplace == False:
+            state = copy.copy(self)
         else:
             state = self
 
         row = state.blank_row - 1
         column = state.blank_column
 
-        if row < 0:
-            return False
-
         state.swap(state.blank_row, state.blank_column, row, column)
-        return state
+        self.blank_row -= 1
 
+        return None if inplace == False else state
 
-    def down(self, change = False):
-        if not change:
-            state = copy.deepcopy(self)
+    def down(self, inplace=False):
+        """
+        Modifies the state array
+        """
+        if self.down_reachable() == False:
+            raise Exception("Error: Can't move down!")
+        if inplace == False:
+            state = copy.copy(self)
         else:
             state = self
 
         row = state.blank_row + 1
         column = state.blank_column
 
-        if row > self.size - 1 :
-            return False
-
         state.swap(state.blank_row, state.blank_column, row, column)
-        return state
+        self.blank_row += 1
+        return None if inplace == False else state
 
-
-    def right(self, change = False):
-        if not change:
-            state = copy.deepcopy(self)
+    def right(self, inplace=False):
+        if self.right_reachable() == False:
+            raise Exception("Error: Can't right down!")
+        if inplace == False:
+            state = copy.copy(self)
         else:
             state = self
 
         row = state.blank_row
         column = state.blank_column + 1
 
-        if column > self.size - 1:
-            return False
-
         state.swap(state.blank_row, state.blank_column, row, column)
-        return state
+        self.blank_column += 1
+        return None if inplace == False else state
 
-
-    def left(self, change = False):
-        if not change:
-            state = copy.deepcopy(self)
+    def left(self, inplace=False):
+        if self.left_reachable() == False:
+            raise Exception("Error: Can't left down!")
+        if inplace == False:
+            state = copy.copy(self)
         else:
             state = self
 
         row = state.blank_row
         column = state.blank_column - 1
 
-        if column < 0:
-            return False
-
         state.swap(state.blank_row, state.blank_column, row, column)
-        return state
-
+        self.blank_column -= 1
+        return None if inplace == False else state
 
     def swap(self, row1, column1, row2, column2):
         temp = self.array[row1][column1]
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
-
     def manhattan(self):
         distance = 0
         for row in range(self.size):
             for column in range(self.size):
-                if self.array[row][column] != 0 and self.array[row][column] != self.goal_state[row][column]:
+                if (self.array[row][column] != 0
+                        and self.array[row][column] != self.goal_state[row][column]):
                     index = self.find(row, column, self.array[row][column])
                     distance += abs(row-index[0]) + abs(column-index[1])
-        
+
         return distance
 
     def find(self, row, col, item):
@@ -145,9 +141,8 @@ class State(object):
             found = self.check_surroundings(distance, row, col, item)
             if found:
                 return found
-        
-        return False
 
+        return False
 
     def check_surroundings(self, distance, row, col, item):
         rows = []
@@ -172,25 +167,22 @@ class State(object):
         for row in rows:
             for col in cols:
                 if self.goal_state[row][col] == item:
-                    return [row,col]
-        
-        return False
+                    return [row, col]
 
+        return False
 
     def in_borders(self, i):
         if i < 0 or i > self.size - 1:
             return False
         else:
-            return True 
-
+            return True
 
     def print(self):
         for row in range(self.size):
             for col in range(self.size):
-                print(str(self.array[row][col]) + " - ", end =" ")
+                print(str(self.array[row][col]) + " - ", end=" ")
             print()
         print()
-
 
     def beam_search(self, w):
         # TODO complete
@@ -215,7 +207,7 @@ class State(object):
                     candidates.append(state)
             else:
                 candidates.append(state)
-        
+
         for candidate in candidates:
             return candidate.beam_search(w)
 
@@ -235,14 +227,13 @@ class State(object):
         Returns:
             type(str), formatted string
         """
-        str = ""
+        state_str = ""
         for row in range(self.size):
             for col in range(self.size):
-                str = str + self.array[row][col] + " - "
-            str = str + "\n"
+                state_str += str(self.array[row][col]) + " - "
+            state_str += "\n"
 
-        return str
-
+        return state_str
 
     def __eq__(self, other):
         """Comparison function for states
@@ -252,7 +243,6 @@ class State(object):
             type(bool) true if they are equal, false otherwise
         """
         return self.array == other.array
-
 
     def __hash__(self):
         """Calculates an hash number from the properties indicated.
