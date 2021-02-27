@@ -6,7 +6,7 @@
 
 ### Team Members:
 
-* *Ahmet Feyzi Halaç
+* Ahmet Feyzi Halaç
 * Aybars Altınışık
 * Göktuğ Gürbüztürk
 * Zeynep Cankara
