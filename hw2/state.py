@@ -194,13 +194,7 @@ def beam_search(initial_state, beam_width=2):
             states = states[:min(w, len(states))]
             for next_state in states:
                 if next_state not in visited:
-                    # random selection of next states
-                    random_idx = randint(0, len(queue))
-                    # insert to queue randomly
-                    if random_idx < len(queue):
-                        queue.insert(random_idx, next_state)
-                    else:
-                        queue.append(next_state)
+                    queue.append(next_state)
 
     return path, w
 
