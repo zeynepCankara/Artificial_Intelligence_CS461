@@ -6,6 +6,9 @@ from collections import deque
 # random number generator for the bredth first search
 from random import randint
 
+# to try out manhattan distance
+import numpy as np
+
 
 class State(object):
     def __init__(self):
@@ -136,86 +139,9 @@ class State(object):
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
-    def manhattan(self):
-        distance = 0
-        for row in range(self.size):
-            for column in range(self.size):
-                if (self.array[row][column] != 0
-                        and self.array[row][column] != self.goal_state[row][column]):
-                    index = self.find(row, column, self.array[row][column])
-                    distance += abs(row-index[0]) + abs(column-index[1])
-
-        return distance
-
-    def find(self, row, col, item):
-        distance = 1
-        found = False
-        while not found and distance < self.size:
-            found = self.check_surroundings(distance, row, col, item)
-            if found:
-                return found
-
-        return False
-
-    def check_surroundings(self, distance, row, col, item):
-        rows = []
-        cols = []
-
-        new_row = row + distance
-        if self.in_borders(new_row):
-            rows.append(new_row)
-
-        new_row = row - distance
-        if self.in_borders(new_row):
-            rows.append(new_row)
-
-        new_col = col + distance
-        if self.in_borders(new_col):
-            cols.append(new_col)
-
-        new_col = col - distance
-        if self.in_borders(new_col):
-            cols.append(new_col)
-
-        for row in rows:
-            for col in cols:
-                if self.goal_state[row][col] == item:
-                    return [row, col]
-
-        return False
-
-    def in_borders(self, i):
-        if i < 0 or i > self.size - 1:
-            return False
-        else:
-            return True
-
-    def beam_search(self, w):
-        # TODO complete
-        if self.is_goal():
-            return self
-        if w == 0:
-            return False
-        counter = w
-        candidates = []
-        possible_states = self.get_next()
-
-        for state in possible_states:
-            if counter == 0:
-                max = 0
-                heuristic = state.manhattan()
-                for candidate in candidates:
-                    if candidate.manhattan() > max:
-                        max = candidate.manhattan()
-                        max_state = candidate
-                if heuristic < max:
-                    candidates.remove(candidate)
-                    candidates.append(state)
-            else:
-                candidates.append(state)
-
-        for candidate in candidates:
-            return candidate.beam_search(w)
+    def h(self):
+        """ Manhattan distance from the goal state and the array itself"""
+        return np.sum(np.abs(np.array(self.array), np.array(self.goal_state)))
 
     def __str__(self):
         """String representation of the state
@@ -248,9 +174,40 @@ class State(object):
         return hash(str(self.array))
 
 
+def beam_search(initial_state, beam_width=2):
+    w = beam_width-1
+    state = initial_state
+    while state.is_goal() == False:
+        w += 1
+        path = []
+        visited = set()
+        queue = deque([state])
+        while queue:
+            state = queue.popleft()
+            visited.add(state)
+            path.append(copy.copy(state))
+            if state.is_goal():
+                return path, w
+            states = state.get_next()
+            # discover the best w candidates
+            states.sort(key=lambda x: x.h(), reverse=True)
+            states = states[:min(w, len(states))]
+            for next_state in states:
+                if next_state not in visited:
+                    # random selection of next states
+                    random_idx = randint(0, len(queue))
+                    # insert to queue randomly
+                    if random_idx < len(queue):
+                        queue.insert(random_idx, next_state)
+                    else:
+                        queue.append(next_state)
+
+    return path, w
+
+
 class PuzzleGenerator(object):
     def __init__(self, nof_distinct_states=3):
-        """stateGenerator constructor
+        """PuzzleGenerator constructor
         Attributes:
         """
         self.nof_distinct_states = nof_distinct_states

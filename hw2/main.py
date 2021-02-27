@@ -12,21 +12,21 @@
 """
 import copy
 import state
-from state import State, PuzzleGenerator
+from state import State, PuzzleGenerator, beam_search
 
 
 def main():
     """Main body to run the program"""
 
-    print()
     initial_state = State()
-    goal_state = [[1, 2, 3, 4],
-                  [2, 3, 4, 3],
-                  [3, 4, 3, 2],
-                  [4, 3, 2, 0]]
     state = initial_state
     puzzle_generator = PuzzleGenerator()
-    print(puzzle_generator)
+
+    path, w_final = beam_search(list(puzzle_generator.states)[0])
+    for puzzle in path:
+        print(puzzle)
+        print("h val: ", puzzle.h())
+    print(w_final)
 
     """
     print(initial_state.array == goal_state)
