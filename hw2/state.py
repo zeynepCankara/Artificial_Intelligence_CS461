@@ -99,7 +99,7 @@ class State(object):
 
     def right(self, inplace=False):
         if self.right_reachable() == False:
-            raise Exception("Error: Can't right down!")
+            raise Exception("Error: Can't move right!")
         if inplace == False:
             state = copy.deepcopy(self)
         else:
@@ -115,7 +115,7 @@ class State(object):
 
     def left(self, inplace=False):
         if self.left_reachable() == False:
-            raise Exception("Error: Can't left down!")
+            raise Exception("Error: Can't move left!")
         if inplace == False:
             state = copy.deepcopy(self)
         else:
@@ -190,13 +190,6 @@ class State(object):
         else:
             return True
 
-    def print(self):
-        for row in range(self.size):
-            for col in range(self.size):
-                print(str(self.array[row][col]) + " - ", end=" ")
-            print()
-        print()
-
     def beam_search(self, w):
         # TODO complete
         if self.is_goal():
@@ -223,17 +216,6 @@ class State(object):
 
         for candidate in candidates:
             return candidate.beam_search(w)
-
-    def shuffle(self):
-        # TODO
-        self.up()
-        self.left()
-        self.left()
-        self.down()
-        self.right()
-        self.up()
-        self.up()
-        self.right()
 
     def __str__(self):
         """String representation of the state
@@ -275,7 +257,7 @@ class PuzzleGenerator(object):
         self.actions = {1: "left", 2: "down", 3: "right", 4: "down"}
 
     def shuffle(self, state):
-        """Shuffles the given state
+        """Shuffles the given state by making random action selection
         Returns:
             state: type(State) shuffled state
         """
@@ -298,15 +280,16 @@ class PuzzleGenerator(object):
                     else:
                         queue.append(next_state)
 
-    def generate(self):
+    def generate(self, nof_distinct_states=3):
         """
         Randomly generates 3 distinct states.
         Returns:
             type(tuple(State)), 3 distinct states
         """
         state = State()
-        while len(self.puzzles) < 3:
-            print(state)
+        if nof_distinct_states > (state.size ** 2-1):
+            raise Exception("Error: Number of distinct state size")
+        while len(self.puzzles) < nof_distinct_states:
             state = self.shuffle(state)
             if state not in self.puzzles:
                 self.puzzles.add(state)
