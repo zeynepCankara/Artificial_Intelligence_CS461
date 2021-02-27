@@ -10,9 +10,14 @@
     - The variant version has repeated tiles.
 
 """
-import copy
 import state
 from state import State, PuzzleGenerator, beam_search
+
+
+def print_solution(path):
+    for puzzle in path:
+        print(puzzle)
+        print("h val: ", puzzle.h())
 
 
 def main():
@@ -21,20 +26,12 @@ def main():
     initial_state = State()
     state = initial_state
     puzzle_generator = PuzzleGenerator()
-
-    path, w_final = beam_search(list(puzzle_generator.states)[0])
-    for puzzle in path:
-        print(puzzle)
-        print("h val: ", puzzle.h())
-    print(w_final)
-
-    """
-    print(initial_state.array == goal_state)
-    a = initial_state.get_next()
-    queue = []
-    for b in a:
-        b_next = b.get_next()
-        """
+    # Solve the generated puzzles
+    for puzzle in puzzle_generator.states:
+        print("Start beam search routine")
+        path, beam_width = beam_search(puzzle)
+        print_solution(path)
+        print("Final beam width: ", beam_width)
 
 
 if __name__ == "__main__":
