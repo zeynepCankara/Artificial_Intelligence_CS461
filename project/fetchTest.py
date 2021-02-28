@@ -1,3 +1,11 @@
+"""
+@Date: 25/02/2021 ~ Version: 1.0
+@Author: Ahmet Feyzi Halaç
+
+@Description: Test for New York Times Mini Crossword Parser
+
+"""
+
 from parsePuzzle import parsePuzzle
 
 puzzleInformation = parsePuzzle()
