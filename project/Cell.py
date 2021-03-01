@@ -10,7 +10,8 @@ from tkinter import *
 
 class Cell(Frame):
     def __init__(self, parent, isBlack=False, number=None, letter=None):
-        Frame.__init__(self, parent, height=100, width=100, bg="black" if isBlack else "white", borderwidth=1, relief="solid")
+        Frame.__init__(self, parent, height=100, width=100, bg="black" if isBlack else "white", highlightthickness=1)
+        self.config(highlightbackground='grey')
 
         if not isBlack:
             
