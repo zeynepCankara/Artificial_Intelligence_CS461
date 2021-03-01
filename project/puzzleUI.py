@@ -39,7 +39,7 @@ i = 0
 acrossClues = []
 for clueNumber, clue in puzzleInformation['acrossClues'].items():
     acrossClues.append(Label(master, text = '%d. %s' % (clueNumber, clue), font = 'franklin 12'))
-    acrossClues[i].grid(row = i + 1, column = 5, sticky = W, rowspan = 1, padx = 10)
+    acrossClues[i].grid(row = i + 1, column = 5, sticky = W, rowspan = 1, padx = 10, columnspan = 2)
     i += 1
 
 # Creating Title of Down Clues
@@ -52,7 +52,7 @@ downClues = []
 j = 0
 for clueNumber, clue in puzzleInformation['downClues'].items():
     downClues.append(Label(master, text = '%d. %s' % (clueNumber, clue), font = 'franklin 12'))
-    downClues[j].grid(row = i + 1, column = 5, sticky = W, rowspan = 1, padx = 10)
+    downClues[j].grid(row = i + 1, column = 5, sticky = W, rowspan = 1, padx = 10, columnspan = 2)
     i += 1
     j += 1
 
@@ -78,12 +78,18 @@ for cell in puzzleInformation['cells']:
 button1 = Button(master, bg="white", relief="solid", text = "Click for Anwers", command=lambda: showAnswers(boxList))
 button1.grid(row = i + 3, column = 5)
 
-button2 = Button(master, bg="white", relief="solid", text = "Hide the Anwers", command=lambda: hideAnswers(boxList))
-button2.grid(row = i + 4, column = 5, pady = 10)
+button2 = Button(master, bg="white", relief="solid", text = "Hide the Anwers", command=lambda: hideAnswers(boxList), anchor = "n")
+button2.grid(row = i + 3, column = 6)
+
+groupLabel = Label(master, text = ("Group Name: RIDDLER"), font="franklin 14")
+groupLabel.grid(row = 16, column = 2, columnspan = 3, sticky = "e")
 
 now = datetime.now()
-dateLabel = Label(master, text = now.strftime("Group Name: RIDDLER\nDate : %d-%m-%Y\nTime : %H:%M:%S"), font="franklin 14")
-dateLabel.grid(row = 16, column = 2, columnspan = 3, rowspan = 2, sticky = "e")
+dateLabel = Label(master, text = now.strftime("Date : %d-%m-%Y"), font="franklin 14")
+dateLabel.grid(row = 17, column = 2, columnspan = 3, sticky = "e")
+
+timeLabel = Label(master, text = now.strftime("Time : %H:%M:%S"), font="franklin 14")
+timeLabel.grid(row = 18, column = 2, columnspan = 3, sticky = "e")
   
 mainloop() 
 
