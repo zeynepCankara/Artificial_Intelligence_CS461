@@ -141,7 +141,7 @@ class State(object):
 
     def h(self):
         """ Manhattan distance from the goal state and the array itself"""
-        return np.sum(np.abs(np.array(self.array), np.array(self.goal_state)))
+        return np.sum(np.abs(np.subtract(np.array(self.array), np.array(self.goal_state))))
 
     def __str__(self):
         """String representation of the state
@@ -188,11 +188,11 @@ def beam_search(initial_state, beam_width=2):
             path.append(copy.copy(state))
             if state.is_goal():
                 return path, w
-            states = state.get_next()
+            next_states = state.get_next()
             # discover the best w candidates
-            states.sort(key=lambda x: x.h(), reverse=True)
-            states = states[:min(w, len(states))]
-            for next_state in states:
+            next_states.sort(key=lambda x: x.h(), reverse=True)
+            next_states = next_states[:min(w, len(next_states))]
+            for next_state in next_states:
                 if next_state not in visited:
                     queue.append(next_state)
 
