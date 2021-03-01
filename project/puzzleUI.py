@@ -65,11 +65,9 @@ for cell in puzzleInformation['cells']:
     else:
         if(cell["cellNumber"] != 0):
             newCell = Cell(master, number=cell["cellNumber"], letter = cell['letter'])
-            newCell.hide()
             boxList.append(newCell)
         else:
             newCell = Cell(master, letter = cell['letter'])
-            newCell.hide()
             boxList.append(newCell)
     boxList[k].grid(row = (int(k / 5) * 3), column = (k % 5), rowspan = 3)
     k += 1
