@@ -139,9 +139,21 @@ class State(object):
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
-    def h(self):
+    def h1(self):
         """ Manhattan distance from the goal state and the array itself"""
-        return np.sum(np.abs(np.subtract(np.array(self.array), np.array(self.goal_state))))
+        value = np.sum(np.abs(np.subtract(np.array(self.array), np.array(self.goal_state))))
+        return value
+
+    def h2(self):
+        counter = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.array[i][j] != self.goal_state[i][j]:
+                    counter = counter + 1
+        return counter
+
+    def h(self):
+        return max(self.h1(), self.h2())
 
     def __str__(self):
         """String representation of the state
@@ -190,7 +202,7 @@ def beam_search(initial_state, beam_width=2):
                 return path, w
             next_states = state.get_next()
             # discover the best w candidates
-            next_states.sort(key=lambda x: x.h(), reverse=True)
+            next_states.sort(key=lambda x: x.h(), reverse=False)
             next_states = next_states[:min(w, len(next_states))]
             for next_state in next_states:
                 if next_state not in visited:
@@ -200,26 +212,28 @@ def beam_search(initial_state, beam_width=2):
 
 
 class PuzzleGenerator(object):
-    def __init__(self, nof_distinct_states=3):
+    def __init__(self, nof_distinct_states=3, limit=4):
         """PuzzleGenerator constructor
         Attributes:
         """
         self.nof_distinct_states = nof_distinct_states
         self.states = set()
-        self.generate()
+        self.generate(limit)
 
-    def shuffle(self, state):
+    def shuffle(self, state, limit):
         """Shuffles the given state by making random action selection
         Returns:
             state: type(State) shuffled state
         """
+        count = 0
         initial_state = state
         queue = deque([state])
         self.visited = set()
         while queue:
             state = queue.popleft()
             self.visited.add(state)
-            if state.is_goal() == False and state != initial_state:
+            count = count + 1
+            if state.is_goal() == False and state != initial_state and count > limit:
                 return state
             states = state.get_next()
             for next_state in states:
@@ -235,7 +249,7 @@ class PuzzleGenerator(object):
     def clear(self):
         self.states = set()
 
-    def generate(self):
+    def generate(self, limit):
         """
         Randomly generates 3 distinct states.
         Returns:
@@ -246,7 +260,7 @@ class PuzzleGenerator(object):
         if self.nof_distinct_states > (state.size ** 2-1):
             raise Exception("Error: Number of distinct state size")
         while len(self.states) < self.nof_distinct_states:
-            state = self.shuffle(state)
+            state = self.shuffle(state, limit)
             if state not in self.states:
                 self.states.add(state)
         return self.states
