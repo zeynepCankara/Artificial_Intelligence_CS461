@@ -1,6 +1,10 @@
 """
 @Date: 25/02/2021 ~ Version: 1.0
 @Author: Ahmet Feyzi Halaç
+@Author: Aybars Altınışık
+@Author: Göktuğ Gürbüztürk
+@Author: Zeynep Cankara
+@Author: Ege Şahin
 
 @Description: New York Times Mini Crossword Parser
 
@@ -67,12 +71,14 @@ def parsePuzzle():
     parentCluelistContainer = driver.find_element_by_class_name('Layout-clueLists--10_Xl')
 
     acrossClues = {}
+    #Get all Across clues
     for acrossClueContainer in parentCluelistContainer.find_elements_by_xpath('div[1]/ol/li'):
         number = int(acrossClueContainer.find_element_by_css_selector('span:first-child').text)
         clue = acrossClueContainer.find_element_by_css_selector('span:last-child').text
         acrossClues[number] = clue
 
     downClues = {}
+    #Get all Down clues
     for downClueContainer in parentCluelistContainer.find_elements_by_xpath('div[2]/ol/li'):
         number = int(downClueContainer.find_element_by_css_selector('span:first-child').text)
         clue = downClueContainer.find_element_by_css_selector('span:last-child').text

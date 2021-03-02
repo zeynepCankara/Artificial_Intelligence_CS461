@@ -1,6 +1,10 @@
 """
 @Date: 28/02/2021 ~ Version: 1.0
 @Author: Ahmet Feyzi Halaç
+@Author: Aybars Altınışık
+@Author: Göktuğ Gürbüztürk
+@Author: Zeynep Cankara
+@Author: Ege Şahin
 
 @Description: Custom Tkinter widget for rendering cells of crossword puzzle
 
