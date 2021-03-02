@@ -1,5 +1,9 @@
 """
 @Date: 28/02/2021 ~ Version: 1.3
+@Author: Ahmet Feyzi Halaç
+@Author: Aybars Altınışık
+@Author: Göktuğ Gürbüztürk
+@Author: Zeynep Cankara
 @Author: Ege Şahin
 
 @Description: Converter of arrays to user interface with the help of custom tkinter widget (Cell)
