@@ -12,9 +12,14 @@
 """
 import state
 from state import State, PuzzleGenerator, beam_search
+import time
+import functools
 
 
 def find_action_sequence(path):
+    """Formatted print the visited paths
+    TODO: Just show the paths visited  which leads to the goal
+    """
     if len(path) <= 0:
         raise Exception("Error: No action transition happened!")
     prev_state = path[0]
@@ -49,10 +54,34 @@ def find_action_sequence(path):
     return "".join(action_sequence)
 
 
-def print_solution(path):
+def timeit(func):
+    """
+    Performs timing experiements on the function execution, prints the result
+    Params:
+        func: type(function) to evaluate performance
+    """
+    @functools.wraps(func)
+    def func_exec(*args, **kwargs):
+        start_time = time.time()
+        func(*args, **kwargs)
+        end_time = time.time()
+        elapsedTime = end_time - start_time
+        print('function: {} . Time elapsed: {} ms'.format(
+            func.__name__, int(elapsedTime * 1000)))
+    return func_exec
+
+
+@timeit
+def get_puzzle_solve_stats(puzzle):
+    """Runs the beam-search algorithm and prints the timing statistics
+    """
+    path, beam_width = beam_search(puzzle)
+
+
+def print_solution(path, beam_width):
     for puzzle in path:
         print(puzzle)
-        print("h val: ", puzzle.h())
+    print("final beam width: ", str(beam_width))
 
 
 def main():
@@ -60,20 +89,19 @@ def main():
 
     initial_state = State()
     state = initial_state
-    puzzle_generator = PuzzleGenerator()
-    for puzzle in puzzle_generator.states:
-        print("puzzle")
-        print(puzzle)
-        # print(puzzle.h())
+    puzzle_generator = PuzzleGenerator(threshold=2)
+    print("Randomly generated distict puzzles")
+    print(puzzle_generator)
 
     # Solve the generated puzzles
-
-    for puzzle in puzzle_generator.states:
-        print("Start beam search routine")
+    generated_puzzles = puzzle_generator.get_states()
+    puzzle_no = 1
+    for puzzle in generated_puzzles:
+        print("Solve puzzle S:", str(puzzle_no))
         path, beam_width = beam_search(puzzle)
+        print_solution(path, beam_width)
         # print(find_action_sequence(path))
-        print_solution(path)
-        print("Final beam width: ", beam_width)
+        puzzle_no += 1
 
     return 0
 

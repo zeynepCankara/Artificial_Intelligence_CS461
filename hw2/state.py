@@ -141,7 +141,8 @@ class State(object):
 
     def h1(self):
         """ Manhattan distance from the goal state and the array itself"""
-        value = np.sum(np.abs(np.subtract(np.array(self.array), np.array(self.goal_state))))
+        value = np.sum(
+            np.abs(np.subtract(np.array(self.array), np.array(self.goal_state))))
         return value
 
     def h2(self):
@@ -202,7 +203,7 @@ def beam_search(initial_state, beam_width=2):
                 return path, w
             next_states = state.get_next()
             # discover the best w candidates
-            next_states.sort(key=lambda x: x.h(), reverse=False)
+            next_states.sort(key=lambda x: x.h1(), reverse=False)
             next_states = next_states[:min(w, len(next_states))]
             for next_state in next_states:
                 if next_state not in visited:
@@ -212,28 +213,35 @@ def beam_search(initial_state, beam_width=2):
 
 
 class PuzzleGenerator(object):
-    def __init__(self, nof_distinct_states=3, limit=4):
+    def __init__(self, nof_distinct_states=3, threshold=4):
         """PuzzleGenerator constructor
         Attributes:
+            nof_distinct_states, type(int): Number of distinct states to generate
+            states, type(set): contains the generated distict states
+        Params:
+            nof_distinct_states, type(int)
+            threshold, type(int): Number of states to generate before selection
         """
         self.nof_distinct_states = nof_distinct_states
-        self.states = set()
-        self.generate(limit)
+        self.threshold = threshold
+        self._states = set()
+        self.__generate()
 
-    def shuffle(self, state, limit):
-        """Shuffles the given state by making random action selection
+    def __shuffle(self, initial_state):
+        """Shuffles the given state by making random action selection via
+        non-deterministic search routine, starting from the goal state
         Returns:
-            state: type(State) shuffled state
+            initial_state: type(State): State to start shuffling
         """
         count = 0
-        initial_state = state
-        queue = deque([state])
+        queue = deque([initial_state])
         self.visited = set()
         while queue:
             state = queue.popleft()
             self.visited.add(state)
-            count = count + 1
-            if state.is_goal() == False and state != initial_state and count > limit:
+            count += 1
+            if(state.is_goal() == False
+               and state != initial_state and count > self.threshold):
                 return state
             states = state.get_next()
             for next_state in states:
@@ -246,24 +254,26 @@ class PuzzleGenerator(object):
                     else:
                         queue.append(next_state)
 
-    def clear(self):
-        self.states = set()
+    def __clear(self):
+        self._states = set()
 
-    def generate(self, limit):
+    def __generate(self):
         """
-        Randomly generates 3 distinct states.
-        Returns:
-            type(tuple(State)), 3 distinct states
+        Randomly generates distinct states.
         """
-        self.clear()
+        self.__clear()
         state = State()
         if self.nof_distinct_states > (state.size ** 2-1):
             raise Exception("Error: Number of distinct state size")
-        while len(self.states) < self.nof_distinct_states:
-            state = self.shuffle(state, limit)
-            if state not in self.states:
-                self.states.add(state)
-        return self.states
+        while len(self._states) < self.nof_distinct_states:
+            state = self.__shuffle(state)
+            if state not in self._states:
+                self._states.add(state)
+
+    def get_states(self):
+        """Getter for the generated puzzles
+        """
+        return self._states
 
     def __str__(self):
         """String representation of the state generator
@@ -272,7 +282,7 @@ class PuzzleGenerator(object):
         """
         state_no = 1
         puzzle_generator = ""
-        for state in self.states:
+        for state in self._states:
             puzzle_generator += "\n------ S" + str(state_no) + " ----- \n"
             puzzle_generator += str(state)
             state_no += 1
