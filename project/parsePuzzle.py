@@ -84,7 +84,6 @@ def parsePuzzle():
         clue = downClueContainer.find_element_by_css_selector('span:last-child').text
         downClues[number] = clue
 
-    driver.close()
     return {
         'cells': cells,
         'acrossClues': acrossClues,
