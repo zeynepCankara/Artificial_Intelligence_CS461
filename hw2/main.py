@@ -51,6 +51,8 @@ def get_puzzle_solve_stats(puzzle):
 
 
 def print_solution(path, beam_width):
+    """Prints the solution path, state by state.
+    """
     rowCurrent = 0
     columnCurrent = 0
     rowNext = 0

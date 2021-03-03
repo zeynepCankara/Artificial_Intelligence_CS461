@@ -86,6 +86,12 @@ class State(object):
         return possible_states
 
     def up(self, inplace=False):
+        """Returns an array which the zero tile moved up one time,
+        Params: 
+            inplace, type(bool): modifies the grid in place
+        Returns:
+            deepcopy or shallowcopy of a state, type(State)
+        """
         if self.up_reachable() == False:
             raise Exception("Error: Can't move up!")
         if inplace == False:
@@ -103,9 +109,11 @@ class State(object):
         return None if inplace == True else state
 
     def down(self, inplace=False):
-        """
-        Move down action
-        Params: inplace, type(bool): modifies the grid in place
+        """Returns an array which the zero tile moved down one time,
+        Params: 
+            inplace, type(bool): modifies the grid in place
+        Returns:
+            deepcopy or shallowcopy of a state, type(State)
         """
         if self.down_reachable() == False:
             raise Exception("Error: Can't move down!")
@@ -123,6 +131,12 @@ class State(object):
         return None if inplace == True else state
 
     def right(self, inplace=False):
+        """Returns an array which the zero tile moved right one time,
+        Params: 
+            inplace, type(bool): modifies the grid in place
+        Returns:
+            deepcopy or shallowcopy of a state, type(State)
+        """
         if self.right_reachable() == False:
             raise Exception("Error: Can't move right!")
         if inplace == False:
@@ -139,6 +153,12 @@ class State(object):
         return None if inplace == True else state
 
     def left(self, inplace=False):
+        """Returns an array which the zero tile moved left one time,
+        Params: 
+            inplace, type(bool): modifies the grid in place
+        Returns:
+            deepcopy or shallowcopy of a state, type(State)
+        """
         if self.left_reachable() == False:
             raise Exception("Error: Can't move left!")
         if inplace == False:
