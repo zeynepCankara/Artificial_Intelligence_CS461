@@ -9,8 +9,6 @@
 
 @Description: Contains the State representation of the puzzle togather with the
 beam search routine and puzzle generator to generate distict random puzzles
-
-
 """
 
 import copy
@@ -18,10 +16,10 @@ import copy
 # for the beam-search
 from collections import deque
 
-# random number generator for the bredth first search
+# random number generator for generating random distinct states
 from random import randint
 
-# to try out manhattan distance
+# heuristic related
 import numpy as np
 
 
@@ -87,7 +85,7 @@ class State(object):
 
     def up(self, inplace=False):
         """Returns an array which the zero tile moved up one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -110,7 +108,7 @@ class State(object):
 
     def down(self, inplace=False):
         """Returns an array which the zero tile moved down one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -132,7 +130,7 @@ class State(object):
 
     def right(self, inplace=False):
         """Returns an array which the zero tile moved right one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -154,7 +152,7 @@ class State(object):
 
     def left(self, inplace=False):
         """Returns an array which the zero tile moved left one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -249,7 +247,7 @@ def beam_search(initial_state, beam_width=2):
             # discover the best w candidates
             next_states.sort(key=lambda x: x.h(), reverse=False)
             next_states = next_states[:min(w, len(next_states))]
-            # add the  unvisited children to the queue
+            # add the unvisited children to the queue
             for next_state in next_states:
                 if next_state not in visited:
                     new_path = list(path)
