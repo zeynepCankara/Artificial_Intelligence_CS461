@@ -26,44 +26,6 @@ import time
 import functools
 
 
-def find_action_sequence(path):
-    """Formatted print the visited paths
-    TODO: Just show the paths visited  which leads to the goal
-    """
-    if len(path) <= 0:
-        raise Exception("Error: No action transition happened!")
-    prev_state = path[0]
-    action_sequence = []
-    for i in range(1, len(path)):
-        current_state = path[i]
-        blank_row_prev = prev_state.blank_row
-        blank_col_prev = prev_state.blank_column
-        blank_row_curr = current_state.blank_row
-        blank_col_curr = current_state.blank_column
-
-        if blank_row_prev > blank_row_curr:
-            action = (" "
-                      + str(current_state.array[blank_row_prev][blank_col_prev])
-                      + " -> up \n")
-        elif blank_row_prev < blank_row_curr:
-            action = (" "
-                      + str(current_state.array[blank_row_prev][blank_col_prev])
-                      + " -> down \n")
-        elif blank_col_prev > blank_col_curr:
-            action = (" "
-                      + str(current_state.array[blank_row_prev][blank_col_prev])
-                      + " -> right \n")
-        elif blank_col_prev < blank_col_curr:
-            action = (" "
-                      + str(current_state.array[blank_row_prev][blank_col_prev])
-                      + " -> left \n")
-        action_sequence.append(str(prev_state))
-        action_sequence.append(action)
-        prev_state = current_state
-    action_sequence.append(str(prev_state))
-    return "".join(action_sequence)
-
-
 def timeit(func):
     """
     Performs timing experiements on the function execution, prints the result
@@ -98,41 +60,36 @@ def print_solution(path, beam_width):
         print(path[i])
         if i < (len(path) - 1):
             nextPuzzle = path[i + 1]
-            while rowCurrent < 4:
-                while columnCurrent < 4:
-                    if currentPuzzle.array[rowCurrent][columnCurrent] == 0:
-                        break
-                    columnCurrent += 1
-                rowCurrent += 1    
-        
-            while rowNext < 4:
-                while columnNext < 4:
-                    if nextPuzzle.array[rowNext][columnNext] == 0:
-                        break
-                    columnNext += 1
-                rowNext += 1
+            for row in range(nextPuzzle.size):
+                for column in range(nextPuzzle.size):
+                    if currentPuzzle.array[row][column] == 0:
+                        rowCurrent = row
+                        columnCurrent = column
+                    elif nextPuzzle.array[row][column] == 0:
+                        rowNext = row
+                        columnNext = column
 
             if rowCurrent > rowNext:
                 action = (" "
-                        + str(rowCurrent - rowNext)
-                        + " -> down \n")
+                        + str(currentPuzzle.array[rowNext][columnNext])
+                        + " ---> down \n")
                 print (action)         
             elif rowCurrent < rowNext:
                 action = (" "
-                        + str(rowNext - rowCurrent)
-                        + " -> up \n")
+                        + str(currentPuzzle.array[rowNext][columnNext])
+                        + " ---> up \n")
                 print(action)         
             elif columnCurrent > columnNext:
                 action = (" "
-                        + str(columnCurrent - columnNext)
-                        + " -> left \n")
+                        + str(currentPuzzle.array[rowNext][columnNext])
+                        + " ---> right \n")
                 print(action)         
             elif columnCurrent < columnNext:
                 action = (" "
-                        + str(columnNext - columnCurrent)
-                        + " -> right \n")
+                        + str(currentPuzzle.array[rowNext][columnNext])
+                        + " ---> left \n")
                 print(action)                             
-    print("final beam width: ", str(beam_width))    
+    print("final beam width: ", str(beam_width))   
 
 
 def main():
