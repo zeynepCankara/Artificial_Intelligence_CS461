@@ -161,14 +161,20 @@ class State(object):
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
+<<<<<<< HEAD
     # Heuristic Function
     def h1(self):
         """ Accumulated distance from the goal state and the array itself"""
+=======
+    def h(self):
+        """ Manhattan distance from the goal state and the array itself"""
+>>>>>>> 26cf8261eba5d9e910a3e00e56af9c9cb097a67c
         value = np.sum(
             np.abs(np.subtract(
                 np.array(self.array), np.array(self.goal_state))))
         return value
 
+<<<<<<< HEAD
     def h2(self):
         """Checks how many numbers in place when compared with the goal state
         The numbers not in place penalised by incrementing the counter by one
@@ -185,6 +191,8 @@ class State(object):
         """
         return max(self.h1(), self.h2())
 
+=======
+>>>>>>> 26cf8261eba5d9e910a3e00e56af9c9cb097a67c
     def __str__(self):
         """String representation of the state
         Returns:
@@ -193,7 +201,10 @@ class State(object):
         state_str = ""
         for row in range(self.size):
             for col in range(self.size):
-                state_str += str(self.array[row][col]) + " - "
+                if col == self.size - 1:
+                    state_str += str(self.array[row][col]) + "\t"
+                else:
+                    state_str += str(self.array[row][col]) + " - "
             state_str += "\n"
 
         return state_str
@@ -230,23 +241,24 @@ def beam_search(initial_state, beam_width=2):
     state = initial_state
     while state.is_goal() == False:
         w += 1
-        path = []
         visited = set()
-        queue = deque([state])
+        queue = deque([[state]])
         while queue:
-            state = queue.popleft()
+            path = queue.popleft()
+            state = path[len(path)-1]
             visited.add(state)
-            path.append(copy.copy(state))
             if state.is_goal():
                 return path, w
             next_states = state.get_next()
             # discover the best w candidates
-            next_states.sort(key=lambda x: x.h1(), reverse=False)
+            next_states.sort(key=lambda x: x.h(), reverse=False)
             next_states = next_states[:min(w, len(next_states))]
             # add the  unvisited children to the queue
             for next_state in next_states:
                 if next_state not in visited:
-                    queue.append(next_state)
+                    new_path = list(path)
+                    new_path.append(next_state)
+                    queue.append(new_path)
 
     return path, w
 
