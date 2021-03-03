@@ -1,5 +1,6 @@
 """
-@Date: 26/02/2021 ~ Version: 1.0
+@Date: 03/03/2021 ~ Version: 2.0
+@Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
 @Author: Göktuğ Gürbüztürk
@@ -7,7 +8,16 @@
 @Author: Ege Şahin
 
 @Description: Solving a variant of the 15 puzzles with beam-search.
-    - The variant version has repeated tiles.
+    ~The variant version has repeated tiles.
+
+### Libraries
+Python 3.6 being used for the homework assignment togather with Numpy.
+The packages that I used can imported via requirments.txt if pip3 installed.
+
+    pip3 install -r requirements.txt
+
+### Running the program
+    python3 main.py
 
 """
 import state

@@ -1,6 +1,21 @@
+"""
+@Date: 03/03/2021 ~ Version: 2.0
+@Groupno: RIDDLER
+@Author: Ahmet Feyzi Halaç
+@Author: Aybars Altınışık
+@Author: Göktuğ Gürbüztürk
+@Author: Zeynep Cankara
+@Author: Ege Şahin
+
+@Description: Contains the State representation of the puzzle togather with the
+beam search routine and puzzle generator to generate distict random puzzles
+
+
+"""
+
 import copy
 
-# for the breadth-first-search
+# for the beam-search
 from collections import deque
 
 # random number generator for the bredth first search
@@ -13,6 +28,12 @@ import numpy as np
 class State(object):
     def __init__(self):
         """State constructor
+        Attributes:
+            goal_state, type(list): Goal state of the puzzle
+            array, type(list): The current state instance
+            blank_row, type(int): the empty cell row of the puzzle
+            blank_column, type(int): the empty cell column of the puzzle
+            size, type(int): the length N of the N x N puzzle grid
         """
         self.goal_state = [[1, 2, 3, 4],
                            [2, 3, 4, 3],
@@ -33,6 +54,7 @@ class State(object):
         """
         return self.array == self.goal_state
 
+    # Boundary checks
     def down_reachable(self):
         return self.blank_row < self.size - 1
 
@@ -139,13 +161,18 @@ class State(object):
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
+    # Heuristic Function
     def h1(self):
-        """ Manhattan distance from the goal state and the array itself"""
+        """ Accumulated distance from the goal state and the array itself"""
         value = np.sum(
-            np.abs(np.subtract(np.array(self.array), np.array(self.goal_state))))
+            np.abs(np.subtract(
+                np.array(self.array), np.array(self.goal_state))))
         return value
 
     def h2(self):
+        """Checks how many numbers in place when compared with the goal state
+        The numbers not in place penalised by incrementing the counter by one
+        """
         counter = 0
         for i in range(self.size):
             for j in range(self.size):
@@ -154,6 +181,8 @@ class State(object):
         return counter
 
     def h(self):
+        """Returns the heuristic which penalises the most
+        """
         return max(self.h1(), self.h2())
 
     def __str__(self):
@@ -188,6 +217,15 @@ class State(object):
 
 
 def beam_search(initial_state, beam_width=2):
+    """ Performs beam-search to solve the puzzle. Implements breadth first
+    search underneath while the best w nodes selected according to the
+    heuristic function. The search ends when the goal state visited. If the
+    goal not found and there exist unvisited states the beam-width w increased
+    by one and search starts again.
+    Params:
+        initial_state, typeState): state to start the beam-search routine
+        beam_width, type(int): branching factor for the beam-search
+    """
     w = beam_width-1
     state = initial_state
     while state.is_goal() == False:
@@ -205,6 +243,7 @@ def beam_search(initial_state, beam_width=2):
             # discover the best w candidates
             next_states.sort(key=lambda x: x.h1(), reverse=False)
             next_states = next_states[:min(w, len(next_states))]
+            # add the  unvisited children to the queue
             for next_state in next_states:
                 if next_state not in visited:
                     queue.append(next_state)
