@@ -161,38 +161,14 @@ class State(object):
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
-<<<<<<< HEAD
     # Heuristic Function
-    def h1(self):
-        """ Accumulated distance from the goal state and the array itself"""
-=======
     def h(self):
         """ Manhattan distance from the goal state and the array itself"""
->>>>>>> 26cf8261eba5d9e910a3e00e56af9c9cb097a67c
         value = np.sum(
             np.abs(np.subtract(
                 np.array(self.array), np.array(self.goal_state))))
         return value
 
-<<<<<<< HEAD
-    def h2(self):
-        """Checks how many numbers in place when compared with the goal state
-        The numbers not in place penalised by incrementing the counter by one
-        """
-        counter = 0
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.array[i][j] != self.goal_state[i][j]:
-                    counter = counter + 1
-        return counter
-
-    def h(self):
-        """Returns the heuristic which penalises the most
-        """
-        return max(self.h1(), self.h2())
-
-=======
->>>>>>> 26cf8261eba5d9e910a3e00e56af9c9cb097a67c
     def __str__(self):
         """String representation of the state
         Returns:
