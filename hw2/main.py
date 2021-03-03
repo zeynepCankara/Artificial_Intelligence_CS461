@@ -57,7 +57,7 @@ def print_solution(path, beam_width):
     columnNext = 0
     for i in range(len(path)):
         currentPuzzle = path[i]
-        print(path[i])
+        print(currentPuzzle)
         if i < (len(path) - 1):
             nextPuzzle = path[i + 1]
             for row in range(nextPuzzle.size):
@@ -71,25 +71,25 @@ def print_solution(path, beam_width):
 
             if rowCurrent > rowNext:
                 action = (" "
-                        + str(currentPuzzle.array[rowNext][columnNext])
-                        + " ---> down \n")
-                print (action)         
+                          + str(currentPuzzle.array[rowNext][columnNext])
+                          + " ---> down \n")
+                print(action)
             elif rowCurrent < rowNext:
                 action = (" "
-                        + str(currentPuzzle.array[rowNext][columnNext])
-                        + " ---> up \n")
-                print(action)         
+                          + str(currentPuzzle.array[rowNext][columnNext])
+                          + " ---> up \n")
+                print(action)
             elif columnCurrent > columnNext:
                 action = (" "
-                        + str(currentPuzzle.array[rowNext][columnNext])
-                        + " ---> right \n")
-                print(action)         
+                          + str(currentPuzzle.array[rowNext][columnNext])
+                          + " ---> right \n")
+                print(action)
             elif columnCurrent < columnNext:
                 action = (" "
-                        + str(currentPuzzle.array[rowNext][columnNext])
-                        + " ---> left \n")
-                print(action)                             
-    print("final beam width: ", str(beam_width))   
+                          + str(currentPuzzle.array[rowNext][columnNext])
+                          + " ---> left \n")
+                print(action)
+    print("final beam width: ", str(beam_width))
 
 
 def main():
@@ -108,7 +108,6 @@ def main():
         print("Solve puzzle S:", str(puzzle_no))
         path, beam_width = beam_search(puzzle)
         print_solution(path, beam_width)
-        # print(find_action_sequence(path))
         puzzle_no += 1
 
     return 0
