@@ -79,9 +79,50 @@ def get_puzzle_solve_stats(puzzle):
 
 
 def print_solution(path, beam_width):
-    for puzzle in path:
-        print(puzzle)
-    print("final beam width: ", str(beam_width))
+    rowCurrent = 0
+    columnCurrent = 0
+    rowNext = 0
+    columnNext = 0
+    for i in range(len(path)):
+        currentPuzzle = path[i]
+        print(path[i])
+        if i < (len(path) - 1):
+            nextPuzzle = path[i + 1]
+            while rowCurrent < 4:
+                while columnCurrent < 4:
+                    if currentPuzzle.array[rowCurrent][columnCurrent] == 0:
+                        break
+                    columnCurrent += 1
+                rowCurrent += 1    
+        
+            while rowNext < 4:
+                while columnNext < 4:
+                    if nextPuzzle.array[rowNext][columnNext] == 0:
+                        break
+                    columnNext += 1
+                rowNext += 1
+
+            if rowCurrent > rowNext:
+                action = (" "
+                        + str(rowCurrent - rowNext)
+                        + " -> down \n")
+                print (action)         
+            elif rowCurrent < rowNext:
+                action = (" "
+                        + str(rowNext - rowCurrent)
+                        + " -> up \n")
+                print(action)         
+            elif columnCurrent > columnNext:
+                action = (" "
+                        + str(columnCurrent - columnNext)
+                        + " -> left \n")
+                print(action)         
+            elif columnCurrent < columnNext:
+                action = (" "
+                        + str(columnNext - columnCurrent)
+                        + " -> right \n")
+                print(action)                             
+    print("final beam width: ", str(beam_width))    
 
 
 def main():
