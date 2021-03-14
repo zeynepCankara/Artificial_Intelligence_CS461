@@ -1,5 +1,5 @@
 """
-@Date: 03/03/2021 ~ Version: 2.0
+@Date: 03/14/2021 ~ Version: 1.0
 @Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
@@ -8,8 +8,7 @@
 @Author: Ege Şahin
 
 @Description: Contains the State representation of the puzzle togather with the
-beam search routine and puzzle generator to generate distict random puzzles
-
+Branch and Bound with Dynamic Programming search routine and puzzle generator to generate distict random puzzles
 
 """
 
@@ -34,6 +33,7 @@ class State(object):
             blank_row, type(int): the empty cell row of the puzzle
             blank_column, type(int): the empty cell column of the puzzle
             size, type(int): the length N of the N x N puzzle grid
+            h_value, type(int): the heuristic value of a state object
         """
         self.goal_state = [[1, 2, 3, 4],
                            [2, 3, 4, 5],
@@ -46,6 +46,7 @@ class State(object):
         self.blank_row = 3
         self.blank_column = 3
         self.size = 4
+        self.h_value = 0
 
     def is_goal(self):
         """Check whether state is a goal state
@@ -103,6 +104,10 @@ class State(object):
         column = state.blank_column
 
         state.swap(state.blank_row, state.blank_column, row, column)
+
+        # calculate new h value
+        state.h_value = state.h()
+
         # update the blank space position
         state.blank_row -= 1
 
@@ -126,6 +131,10 @@ class State(object):
         column = state.blank_column
 
         state.swap(state.blank_row, state.blank_column, row, column)
+
+        # calculate new h value
+        state.h_value = state.h()
+
         # update the blank space position
         state.blank_row += 1
         return None if inplace == True else state
@@ -148,6 +157,10 @@ class State(object):
         column = state.blank_column + 1
 
         state.swap(state.blank_row, state.blank_column, row, column)
+
+        # calculate new h value
+        state.h_value = state.h()
+        
         # update the blank space position
         state.blank_column += 1
         return None if inplace == True else state
@@ -170,6 +183,10 @@ class State(object):
         column = state.blank_column - 1
 
         state.swap(state.blank_row, state.blank_column, row, column)
+
+        # calculate new h value
+        state.h_value = state.h()
+        
         # update the blank space position
         state.blank_column -= 1
         return None if inplace == True else state
@@ -223,46 +240,41 @@ class State(object):
         return hash(str(self.array))
 
 
-def beam_search(initial_state, beam_width=2):
-    """ Performs beam-search to solve the puzzle. Implements breadth first
-    search underneath while the best w nodes selected according to the
-    heuristic function. The search ends when the goal state visited. If the
-    goal not found and there exist unvisited states the beam-width w increased
-    by one and search starts again.
+def bnb_search(initial_state):
+    """ Performs Branch and Bound search with Dynamic Programming to solve the puzzle.
+    The search ends when the goal state visited. If the goal not found returns None.
     Params:
         initial_state, typeState): state to start the beam-search routine
-        beam_width, type(int): branching factor for the beam-search
     """
     state = initial_state
     visited = set()
-    queue = deque([[state]])
+
+    # Priority queue is used to find best candidate path
+    queue = PriorityQueue()
+    queue.insert([state])
     while queue:
-        path = queue.popleft()
+        path = queue.pop()
         state = path[len(path)-1]
         visited.add(state)
         if state.is_goal():
             return path
         next_states = state.get_next()
 
-        # discover the best w candidates
-        next_states.sort(key=lambda x: x.h(), reverse=False)
-
-        # delete all paths which reach a common node with maximum heuristic
-        for next_state in next_states:
-            if next_state not in visited:
-                new_path = list(path)
-                new_path.append(next_state)
-                queue.append(new_path)
-                
         # add the  unvisited children to the queue
         for next_state in next_states:
+            # if the state is not reached with a lower h. (Dynamic Programming)
             if next_state not in visited:
                 new_path = list(path)
                 new_path.append(next_state)
-                queue.append(new_path)
+                queue.insert(new_path)
 
-    return path
+    return None
 
+def queue_h(queue):
+    total_h = 0
+    for state in queue:
+        total_h = total_h + state.h_value
+    return total_h
 
 class PuzzleGenerator(object):
     def __init__(self, nof_distinct_states=3, threshold=4):
@@ -339,3 +351,39 @@ class PuzzleGenerator(object):
             puzzle_generator += str(state)
             state_no += 1
         return puzzle_generator
+
+"""A simple PriorityQueue implementation for Branch and Bound search
+"""
+class PriorityQueue(object): 
+    
+    def __init__(self):
+        """PriorityQueue constructor creates an empty array
+        """ 
+        self.queue = [] 
+        
+    def isEmpty(self):
+        """Check if the queue is empty
+        """ 
+        return len(self.queue) == 0
+
+    def insert(self, data): 
+        """Insert an element in the queue
+        """
+        self.queue.append(data) 
+
+    def pop(self): 
+        """Pop an element according to its priority
+        """
+        try: 
+            min = 9999
+            min_i = 0
+            for i in range(len(self.queue)): 
+                if queue_h(self.queue[i]) < min: 
+                    min = queue_h(self.queue[i])
+                    min_i = i
+            item = self.queue[min_i] 
+            del self.queue[min_i] 
+            return item 
+        except IndexError: 
+            print() 
+            exit()

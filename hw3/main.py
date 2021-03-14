@@ -1,5 +1,5 @@
 """
-@Date: 03/03/2021 ~ Version: 2.0
+@Date: 03/14/2021 ~ Version: 2.0
 @Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
@@ -7,7 +7,7 @@
 @Author: Zeynep Cankara
 @Author: Ege Şahin
 
-@Description: Solving a variant of the 15 puzzles with beam-search.
+@Description: Solving a variant of the 15 puzzles with Branch and Bound search win Dynamic Programming.
     ~The variant version has repeated tiles.
 
 ### Libraries
@@ -21,7 +21,7 @@ The packages that I used can imported via requirments.txt if pip3 installed.
 
 """
 import state
-from state import State, PuzzleGenerator, beam_search
+from state import State, PuzzleGenerator, bnb_search
 import time
 import functools
 
@@ -45,12 +45,12 @@ def timeit(func):
 
 @timeit
 def get_puzzle_solve_stats(puzzle):
-    """Runs the beam-search algorithm and prints the timing statistics
+    """Runs the bnb_search algorithm and prints the timing statistics
     """
-    path, beam_width = beam_search(puzzle)
+    path = bnb_search(puzzle)
 
 
-def print_solution(path, beam_width):
+def print_solution(path):
     """Prints the solution path, state by state.
     """
     rowCurrent = 0
@@ -91,7 +91,6 @@ def print_solution(path, beam_width):
                           + str(currentPuzzle.array[rowNext][columnNext])
                           + " ---> left \n")
                 print(action)
-    print("final beam width: ", str(beam_width))
 
 
 def main():
@@ -108,8 +107,8 @@ def main():
     puzzle_no = 1
     for puzzle in generated_puzzles:
         print("Solve puzzle S:", str(puzzle_no))
-        path, beam_width = beam_search(puzzle)
-        print_solution(path, beam_width)
+        path= bnb_search(puzzle)
+        print_solution(path)
         puzzle_no += 1
 
     return 0
