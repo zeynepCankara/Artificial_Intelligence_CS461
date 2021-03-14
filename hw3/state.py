@@ -198,13 +198,20 @@ class State(object):
         self.array[row1][column1] = self.array[row2][column2]
         self.array[row2][column2] = temp
 
-    # Heuristic Function TODO
+    # Heuristic Function
     def h(self):
         """ Manhattan distance from the goal state and the array itself"""
         value = np.sum(
             np.abs(np.subtract(
                 np.array(self.array), np.array(self.goal_state))))
-        return value
+                
+        """ If there are elements different than 5 in the third row and second column or second row and third column, there should be an extra cost for them. """ 
+        extraCost = 0
+        for row in range(self.size):
+            for col in range(self.size):
+                if (((row == 3 and col == 2) or (row == 2 and col == 3)) and self.array[row][col] != 5):
+                    extraCost += 1
+        return extraCost + value       
 
     def __str__(self):
         """String representation of the state
