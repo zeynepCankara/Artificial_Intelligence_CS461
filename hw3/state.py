@@ -47,6 +47,12 @@ class State(object):
         self.blank_column = 3
         self.size = 4
         self.h_value = 0
+        self.pos_1 = [[0,0]]
+        self.pos_2 = [[0,1], [1,0]]
+        self.pos_3 = [[0,2], [1,1], [2,0]]
+        self.pos_4 = [[0,3], [1,2], [2,1], [3,0]]
+        self.pos_5 = [[1,3], [2,2], [2,3], [3,1], [3,2]]
+        self.pos_0 = [[3,3]]
 
     def is_goal(self):
         """Check whether state is a goal state
@@ -201,18 +207,32 @@ class State(object):
     # Heuristic Function
     def h(self):
         """ Manhattan distance from the goal state and the array itself"""
-        value = np.sum(
-            np.abs(np.subtract(
-                np.array(self.array), np.array(self.goal_state))))
-                
-        """ If there are elements different than 5 in the third row and second column or second row and third column, there should be an extra cost for them. """ 
-        extraCost = 0
+        manhattan = 0
+        goal_pos = []
         for row in range(self.size):
             for col in range(self.size):
-                if (((row == 3 and col == 2) or (row == 2 and col == 3)) and self.array[row][col] != 5):
-                    extraCost += 1
-        return extraCost + value       
-
+                if self.array[row][col] == 1:
+                    goal_pos = self.pos_1
+                elif self.array[row][col] == 2:
+                    goal_pos = self.pos_2
+                elif self.array[row][col] == 3:
+                    goal_pos = self.pos_3
+                elif self.array[row][col] == 4:
+                    goal_pos = self.pos_4
+                elif self.array[row][col] == 5:
+                    goal_pos = self.pos_5
+                else:
+                    goal_pos = self.pos_0
+                
+                min = 99
+                for pos in goal_pos:
+                    new_dist = (abs(pos[0] - row) + abs(pos[1] - col))
+                    if new_dist < min:
+                        min = new_dist
+                
+                manhattan = manhattan + min
+        return manhattan
+                    
     def __str__(self):
         """String representation of the state
         Returns:
@@ -284,7 +304,7 @@ def queue_h(queue):
     return total_h
 
 class PuzzleGenerator(object):
-    def __init__(self, nof_distinct_states=3, threshold=4):
+    def __init__(self, nof_distinct_states=25, threshold=4):
         """PuzzleGenerator constructor
         Attributes:
             nof_distinct_states, type(int): Number of distinct states to generate
@@ -334,7 +354,7 @@ class PuzzleGenerator(object):
         """
         self.__clear()
         state = State()
-        if self.nof_distinct_states > (state.size ** 2-1):
+        if self.nof_distinct_states > (25):
             raise Exception("Error: Number of distinct state size")
         while len(self._states) < self.nof_distinct_states:
             state = self.__shuffle(state)
