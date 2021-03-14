@@ -1,5 +1,5 @@
 """
-@Date: 03/14/2021 ~ Version: 2.0
+@Date: 03/14/2021 ~ Version: 1.0
 @Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
@@ -91,6 +91,8 @@ def print_solution(path):
                           + str(currentPuzzle.array[rowNext][columnNext])
                           + " ---> left \n")
                 print(action)
+    print("Number of movements made to reach goal state: " + str(len(path)-1) + "\n")
+    print("######################################################\n")
 
 
 def main():
