@@ -1,8 +1,11 @@
 
-# Homework 2: Solving Sym15 Puzzle with Beam Search
+# CS461: Homework 3
 
+@Date: 18/03/2021 ~ Version: 1.0
 
-@Date: 26/02/2021 ~ Version: 1.0
+## Group Name:
+
+* RIDDLER
 
 ### Team Members:
 
@@ -12,14 +15,11 @@
 * Zeynep Cankara
 * Ege Şahin
 
-Solving a variant of the 15 puzzles with beam-search. The variant version has repeated tiles.
+Contains the State representation of the puzzle togather with the Branch and Bound with Dynamic Programming search routine.
+Puzzle generator generates distict random puzzles for the problem in homework 3 description.
 
-### Libraries
-Python 3.6 being used for the homework assignment. The packages that I used can imported via requirments.txt.
-
-You can run the following command to install all the packages listed in the requirements.txt:
-
-    pip3 install -r requirements.txt
+* report.pdf: Contains the software output to answer questions in the homework  3 decription.
 
 ### Running the program
-    python3 main.py
+
+python3 main.py
