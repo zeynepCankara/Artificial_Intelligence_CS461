@@ -14,14 +14,15 @@ Branch and Bound with Dynamic Programming search routine and puzzle generator to
 
 import copy
 
-# for the beam-search
+# for the queue
 from collections import deque
 
 # random number generator for the bredth first search
 from random import randint
 
-# to try out manhattan distance
-import numpy as np
+import random
+
+random.seed(0)
 
 
 class State(object):
@@ -47,12 +48,12 @@ class State(object):
         self.blank_column = 3
         self.size = 4
         self.h_value = 0
-        self.pos_1 = [[0,0]]
-        self.pos_2 = [[0,1], [1,0]]
-        self.pos_3 = [[0,2], [1,1], [2,0]]
-        self.pos_4 = [[0,3], [1,2], [2,1], [3,0]]
-        self.pos_5 = [[1,3], [2,2], [2,3], [3,1], [3,2]]
-        self.pos_0 = [[3,3]]
+        self.pos_1 = [[0, 0]]
+        self.pos_2 = [[0, 1], [1, 0]]
+        self.pos_3 = [[0, 2], [1, 1], [2, 0]]
+        self.pos_4 = [[0, 3], [1, 2], [2, 1], [3, 0]]
+        self.pos_5 = [[1, 3], [2, 2], [2, 3], [3, 1], [3, 2]]
+        self.pos_0 = [[3, 3]]
 
     def is_goal(self):
         """Check whether state is a goal state
@@ -94,7 +95,7 @@ class State(object):
 
     def up(self, inplace=False):
         """Returns an array which the zero tile moved up one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -121,7 +122,7 @@ class State(object):
 
     def down(self, inplace=False):
         """Returns an array which the zero tile moved down one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -147,7 +148,7 @@ class State(object):
 
     def right(self, inplace=False):
         """Returns an array which the zero tile moved right one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -166,14 +167,14 @@ class State(object):
 
         # calculate new h value
         state.h_value = state.h()
-        
+
         # update the blank space position
         state.blank_column += 1
         return None if inplace == True else state
 
     def left(self, inplace=False):
         """Returns an array which the zero tile moved left one time,
-        Params: 
+        Params:
             inplace, type(bool): modifies the grid in place
         Returns:
             deepcopy or shallowcopy of a state, type(State)
@@ -192,7 +193,7 @@ class State(object):
 
         # calculate new h value
         state.h_value = state.h()
-        
+
         # update the blank space position
         state.blank_column -= 1
         return None if inplace == True else state
@@ -223,16 +224,16 @@ class State(object):
                     goal_pos = self.pos_5
                 else:
                     goal_pos = self.pos_0
-                
+
                 min = 99
                 for pos in goal_pos:
                     new_dist = (abs(pos[0] - row) + abs(pos[1] - col))
                     if new_dist < min:
                         min = new_dist
-                
+
                 manhattan = manhattan + min
         return manhattan
-                    
+
     def __str__(self):
         """String representation of the state
         Returns:
@@ -297,11 +298,13 @@ def bnb_search(initial_state):
 
     return None
 
+
 def queue_h(queue):
     total_h = 0
     for state in queue:
         total_h = total_h + state.h_value
     return total_h
+
 
 class PuzzleGenerator(object):
     def __init__(self, nof_distinct_states=25, threshold=4):
@@ -379,38 +382,41 @@ class PuzzleGenerator(object):
             state_no += 1
         return puzzle_generator
 
+
 """A simple PriorityQueue implementation for Branch and Bound search
 """
-class PriorityQueue(object): 
-    
+
+
+class PriorityQueue(object):
+
     def __init__(self):
         """PriorityQueue constructor creates an empty array
-        """ 
-        self.queue = [] 
-        
+        """
+        self.queue = []
+
     def isEmpty(self):
         """Check if the queue is empty
-        """ 
+        """
         return len(self.queue) == 0
 
-    def insert(self, data): 
+    def insert(self, data):
         """Insert an element in the queue
         """
-        self.queue.append(data) 
+        self.queue.append(data)
 
-    def pop(self): 
+    def pop(self):
         """Pop an element according to its priority
         """
-        try: 
+        try:
             min = 9999
             min_i = 0
-            for i in range(len(self.queue)): 
-                if queue_h(self.queue[i]) < min: 
+            for i in range(len(self.queue)):
+                if queue_h(self.queue[i]) < min:
                     min = queue_h(self.queue[i])
                     min_i = i
-            item = self.queue[min_i] 
-            del self.queue[min_i] 
-            return item 
-        except IndexError: 
-            print() 
+            item = self.queue[min_i]
+            del self.queue[min_i]
+            return item
+        except IndexError:
+            print()
             exit()
