@@ -20,10 +20,6 @@ from collections import deque
 # random number generator for the bredth first search
 from random import randint
 
-import random
-
-random.seed(0)
-
 
 class State(object):
     def __init__(self):
