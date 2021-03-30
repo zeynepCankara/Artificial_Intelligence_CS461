@@ -1,5 +1,5 @@
 """
-@Date: 03/14/2021 ~ Version: 1.0
+@Date: 03/30/2021 ~ Version: 1.0
 @Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık

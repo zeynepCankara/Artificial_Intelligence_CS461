@@ -44,12 +44,6 @@ class State(object):
         self.blank_column = 3
         self.size = 4
         self.h_value = 0
-        self.pos_1 = [[0, 0]]
-        self.pos_2 = [[0, 1], [1, 0]]
-        self.pos_3 = [[0, 2], [1, 1], [2, 0]]
-        self.pos_4 = [[0, 3], [1, 2], [2, 1], [3, 0]]
-        self.pos_5 = [[1, 3], [2, 2], [2, 3], [3, 1], [3, 2]]
-        self.pos_0 = [[3, 3]]
 
     def is_goal(self):
         """Check whether state is a goal state
@@ -208,26 +202,7 @@ class State(object):
         goal_pos = []
         for row in range(self.size):
             for col in range(self.size):
-                if self.array[row][col] == 1:
-                    goal_pos = self.pos_1
-                elif self.array[row][col] == 2:
-                    goal_pos = self.pos_2
-                elif self.array[row][col] == 3:
-                    goal_pos = self.pos_3
-                elif self.array[row][col] == 4:
-                    goal_pos = self.pos_4
-                elif self.array[row][col] == 5:
-                    goal_pos = self.pos_5
-                else:
-                    goal_pos = self.pos_0
-
-                min = 99
-                for pos in goal_pos:
-                    new_dist = (abs(pos[0] - row) + abs(pos[1] - col))
-                    if new_dist < min:
-                        min = new_dist
-
-                manhattan = manhattan + min
+                manhattan = manhattan + abs((row * self.size + col + 1) - self.array[row][col])
         return manhattan
 
     def __str__(self):
@@ -241,7 +216,10 @@ class State(object):
                 if col == self.size - 1:
                     state_str += str(self.array[row][col]) + "\t"
                 else:
-                    state_str += str(self.array[row][col]) + " - "
+                    if int(self.array[row][col] / 10) == 0:
+                        state_str += str(self.array[row][col]) + "  - "
+                    else:
+                        state_str += str(self.array[row][col]) + " - "
             state_str += "\n"
 
         return state_str
@@ -296,14 +274,11 @@ def bnb_search(initial_state):
 
 
 def queue_h(queue):
-    total_h = 0
-    for state in queue:
-        total_h = total_h + state.h_value
-    return total_h
+    return len(queue) + queue[len(queue) - 1].h()
 
 
 class PuzzleGenerator(object):
-    def __init__(self, nof_distinct_states=25, threshold=4):
+    def __init__(self, nof_distinct_states=25, threshold=2):
         """PuzzleGenerator constructor
         Attributes:
             nof_distinct_states, type(int): Number of distinct states to generate
