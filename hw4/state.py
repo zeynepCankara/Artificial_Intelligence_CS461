@@ -247,9 +247,10 @@ class State(object):
 
 def a_star(initial_state):
     """ Performs A* search to solve the puzzle.
-    The search ends when the goal state visited. If the goal not found returns None.
+    The search ends when the goal state visited.
+    If the goal not found returns None.
     Params:
-        initial_state, typeState): search source state
+        initial_state, type(State): search source state
     """
     state = initial_state
     visited = set()
@@ -277,6 +278,14 @@ def a_star(initial_state):
 
 
 def queue_h(queue):
+    """Attaches priority to the states in the queue which being used
+    to retrieve items according to the priority.
+    Priority is sum of Queue size togather with the h value of the last item in the queue
+    Params:
+        queue, type(PriorityQueue)
+    Returns:
+        type(int): priority of the last item
+    """
     return len(queue) + queue[len(queue) - 1].h()
 
 
@@ -356,10 +365,6 @@ class PuzzleGenerator(object):
             puzzle_generator += str(state)
             state_no += 1
         return puzzle_generator
-
-
-"""A simple PriorityQueue implementation for Branch and Bound search
-"""
 
 
 class PriorityQueue(object):
