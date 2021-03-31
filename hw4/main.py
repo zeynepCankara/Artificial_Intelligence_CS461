@@ -13,6 +13,9 @@
 ### Running the program
     python3 main.py
 
+### getting the solution paths in a file rather than console
+    python3 main.py > output.txt
+
 """
 import state
 from state import State, PuzzleGenerator, a_star
