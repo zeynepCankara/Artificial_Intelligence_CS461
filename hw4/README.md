@@ -15,8 +15,15 @@
 * Zeynep Cankara
 * Ege Şahin
 
-Implementation of the A* algorithm. Solves 15-puzzle optimally with minimum number of moves.
+### Description:
+Implementation of the A* algorithm.
+Solves 15-puzzle optimally with minimum number of moves.
+
+### Contents:
+- main.py: utility functions for printing the path and running the puzzle solver
+- state.py: contains the puzzle generator, A* algorithm and puzzle state representation
+- report.pdf: Explains the experimental results.
 
 ### Running the program
 
-python3 main.py
+$ python3 main.py

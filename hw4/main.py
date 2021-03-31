@@ -1,5 +1,5 @@
 """
-@Date: 03/30/2021 ~ Version: 1.0
+@Date: 31/03/2021 ~ Version: 1.0
 @Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
@@ -15,7 +15,7 @@
 
 """
 import state
-from state import State, PuzzleGenerator, bnb_search
+from state import State, PuzzleGenerator, a_star
 
 
 def print_solution(path):
@@ -80,7 +80,7 @@ def main():
     puzzle_no = 1
     for puzzle in generated_puzzles:
         print("Solve puzzle S:", str(puzzle_no))
-        path = bnb_search(puzzle)
+        path = a_star(puzzle)
         print_solution(path)
         puzzle_no += 1
 

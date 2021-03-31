@@ -1,5 +1,5 @@
 """
-@Date: 03/14/2021 ~ Version: 1.0
+@Date: 31/03/2021 ~ Version: 1.0
 @Groupno: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
@@ -8,7 +8,7 @@
 @Author: Ege Şahin
 
 @Description: Contains the State representation of the puzzle togather with the
-Branch and Bound with Dynamic Programming search routine and puzzle generator to generate distict random puzzles
+A* search routine and puzzle generator to generate distict random puzzles
 
 """
 
@@ -197,13 +197,16 @@ class State(object):
 
     # Heuristic Function
     def h(self):
-        """ Manhattan distance from the goal state and the array itself"""
-        manhattan = 0
+        """ Distance from the goal state and the array itself
+        Calculated by accumulating over the distance change of each array item.
+        """
+        distance = 0
         goal_pos = []
         for row in range(self.size):
             for col in range(self.size):
-                manhattan = manhattan + abs((row * self.size + col + 1) - self.array[row][col])
-        return manhattan
+                distance = distance + \
+                    abs((row * self.size + col + 1) - self.array[row][col])
+        return distance
 
     def __str__(self):
         """String representation of the state
@@ -242,11 +245,11 @@ class State(object):
         return hash(str(self.array))
 
 
-def bnb_search(initial_state):
-    """ Performs Branch and Bound search with Dynamic Programming to solve the puzzle.
+def a_star(initial_state):
+    """ Performs A* search to solve the puzzle.
     The search ends when the goal state visited. If the goal not found returns None.
     Params:
-        initial_state, typeState): state to start the beam-search routine
+        initial_state, typeState): search source state
     """
     state = initial_state
     visited = set()
@@ -312,6 +315,7 @@ class PuzzleGenerator(object):
             for next_state in states:
                 if next_state not in self.visited:
                     # random selection of next states
+
                     random_idx = randint(0, len(queue))
                     # insert to queue randomly
                     if random_idx < len(queue):
