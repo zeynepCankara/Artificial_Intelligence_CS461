@@ -280,7 +280,9 @@ def a_star(initial_state):
 def queue_h(queue):
     """Attaches priority to the states in the queue which being used
     to retrieve items according to the priority.
-    Priority is sum of Queue size togather with the h value of the last item in the queue
+    Priority is sum of Queue size together with the h value of the last item in the queue
+    Queue size represents the current path length since every state corresponds to a single move
+    Since h function corresponds to the number of moves needed to solve puzzle, it is regarded as lower bound estimate
     Params:
         queue, type(PriorityQueue)
     Returns:
