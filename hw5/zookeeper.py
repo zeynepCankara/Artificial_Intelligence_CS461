@@ -143,32 +143,25 @@ class Zookeeper(object):
         return None
 
     def recursiveBackward(self, rule):
-        if not rule.antecedents_rules:
-            allBasicAntecedentsSatisfied = True
-            for antecedent in rule.antecedents:
-                if antecedent not in self.wm:
-                    allBasicAntecedentsSatisfied = False
-            return allBasicAntecedentsSatisfied
-        else:
-            rulesSatisfied = True
-            for antecedent in rule.antecedents:
-                basicAntecedent = True
-                validRuleExists = False
-                for antecedent_rule in rule.antecedents_rules:
-                    if antecedent in antecedent_rule.consequents:
-                        basicAntecedent = False
-                        if self.recursiveBackward(antecedent_rule):
-                            validRuleExists = True
-                            break
-                if basicAntecedent:
-                    if antecedent not in self.wm:
-                        rulesSatisfied = False
+        rulesSatisfied = True
+        for antecedent in rule.antecedents:
+            basicAntecedent = True
+            validRuleExists = False
+            for antecedent_rule in rule.antecedents_rules:
+                if antecedent in antecedent_rule.consequents:
+                    basicAntecedent = False
+                    if self.recursiveBackward(antecedent_rule):
+                        validRuleExists = True
                         break
-                else:   
-                    if not validRuleExists:
-                        rulesSatisfied = False
-                    
-            return rulesSatisfied
+            if basicAntecedent:
+                if antecedent not in self.wm:
+                    rulesSatisfied = False
+                    break
+            else:   
+                if not validRuleExists:
+                    rulesSatisfied = False
+
+        return rulesSatisfied
                                                                                                               
     def __repr__(self):
         return "Zookeeper()"
