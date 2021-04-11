@@ -29,8 +29,12 @@ def main(trace):
     traceMode = "0"
     if trace != "1":
         traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
+    
+    animalName = "Stretch"
+    wm = ["?x has hair", "?x chews cud", "?x has long legs", "?x has a long neck", "?x has a tawny color", "?x has dark spots"]
+
     # run the program in single stepping mode
-    zookeeper = Zookeeper()
+    zookeeper = Zookeeper(wm)
     test_rules(zookeeper)
 
 

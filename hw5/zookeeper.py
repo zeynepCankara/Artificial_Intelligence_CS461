@@ -114,7 +114,7 @@ Z15 = Rule(["?x is a bird", "?x is a good flyer"],
 
 
 class Zookeeper(object):
-    def __init__(self):
+    def __init__(self, wm):
         """Rule based Zookeeper system constructor
         Args:
 
@@ -122,6 +122,10 @@ class Zookeeper(object):
 
         """
         # TODO: set the rules as a graph structure
+        self.wm = wm
+
+        self.animals = ["tiger", "cheetah", "giraffe", "zebra", "ostrich", "penguin", "albatross"]
+
         self.rules = [Z1, Z2, Z3, Z4, Z5, Z6, Z7,
                       Z8, Z9, Z10, Z11, Z12, Z13, Z14, Z15]
         # TODO: Iterate over each rules and set the ancestor and consequent rules that can be reachable
