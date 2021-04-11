@@ -22,20 +22,29 @@ import argparse
 # the zookeeper system
 from zookeeper import Rule, Zookeeper, test_rules
 
+def print_working_memory(animalName, wm):
+    print("\nWorking Memory: ")
+    for item in wm:
+        print(animalName + item[2:])
+    print()
 
 def main(trace):
     """Main body to run the program"""
 
     traceMode = "0"
-    if trace != "1":
-        traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
+    # if trace != "1":
+    #    traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
     
     animalName = "Stretch"
     wm = ["?x has hair", "?x chews cud", "?x has long legs", "?x has a long neck", "?x has a tawny color", "?x has dark spots"]
 
+    # print initial working memory
+    print_working_memory(animalName, wm)
+
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm)
-    test_rules(zookeeper)
+    animal = zookeeper.backward_chaining(animalName)
+    
 
 
 if __name__ == "__main__":
@@ -48,3 +57,5 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     main(trace=args.trace)
+
+

@@ -124,8 +124,6 @@ class Zookeeper(object):
         # TODO: set the rules as a graph structure
         self.wm = wm
 
-        self.animals = ["tiger", "cheetah", "giraffe", "zebra", "ostrich", "penguin", "albatross"]
-
         self.rules = [Z1, Z2, Z3, Z4, Z5, Z6, Z7,
                       Z8, Z9, Z10, Z11, Z12, Z13, Z14, Z15]
         # TODO: Iterate over each rules and set the ancestor and consequent rules that can be reachable
@@ -135,12 +133,22 @@ class Zookeeper(object):
             rule.set_antecedents_rules(
                 [Z for idx, Z in enumerate(self.rules) if idx != i])
 
-    def backward_chaining(self, hypotheses):
+    def backward_chaining(self, animalName):
         """Tests whether an animal fits to the working memory
         TODO: Get the rule corresponding to hypotheses and call recursiveBackward with that rule
         """
-        self.recursiveBackward(self.rules[10])
-        return None
+        for i in range(8,15):
+            found = self.recursiveBackward(self.rules[i])
+            if found:
+                break
+        if not found:
+            i = -1
+            print("Animal is not found!")
+        else:
+            for final_conseq in self.rules[i].consequents:
+                print(animalName, final_conseq[3:])
+                print()
+        
 
     def recursiveBackward(self, rule):
         rulesSatisfied = True
