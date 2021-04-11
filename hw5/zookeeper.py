@@ -151,22 +151,40 @@ class Zookeeper(object):
         
 
     def recursiveBackward(self, rule):
-        rulesSatisfied = True
+        # Initially, assume all rules are satisfied. If there are any counter-examples, make this variable false, return true otherwise
+        rulesSatisfied = True 
         for antecedent in rule.antecedents:
+            # Initially, assume specified antecedent is basic, meaning there are no rules whose consequent is this antecedent
+            # If there is any rule which disproves this assumption, make it false
             basicAntecedent = True
+
+            # There can be multiple rules with same consequence equal to specified antecedent
+            # So, initially, assume there are no triggered rules whose consequence equals to specified antecedent
+            # If any rule returns true, make this variable true
             validRuleExists = False
+
+            # Look for a rule whose consequence is specified antecedent
             for antecedent_rule in rule.antecedents_rules:
                 if antecedent in antecedent_rule.consequents:
+                    # Rule is found, so antecedent is not a basic one
                     basicAntecedent = False
+
+                    # Call recursiveBackward with this rule
                     if self.recursiveBackward(antecedent_rule):
+                        # Rule is triggered
                         validRuleExists = True
                         break
+
             if basicAntecedent:
+                # Antecedent is a basic one, so, just search working memory for antecedent
                 if antecedent not in self.wm:
+                    # Antecedent is not in working memory, so rule should not be satisfied
                     rulesSatisfied = False
                     break
             else:   
+                # Antecedent is not a basic antecedent
                 if not validRuleExists:
+                    # There are no satisfied rules whose consequence is specified antecedent 
                     rulesSatisfied = False
 
         return rulesSatisfied
