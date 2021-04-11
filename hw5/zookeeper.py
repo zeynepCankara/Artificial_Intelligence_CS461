@@ -94,17 +94,17 @@ Z6 = Rule(["?x is a mammal", "?x has pointed teeth", "?x has claws",
            "?x has forward-pointing eyes"], ["?x is a carnivore"], "Z6")
 Z7 = Rule(["?x is a mammal", "?x has hoofs"], ["?x is an ungulate"], "Z7")
 Z8 = Rule(["?x is a mammal", "?x chews cud"], ["?x is an ungulate"],  "Z8")
-Z9 = Rule(["?x is a carnivore", "?x has tawny color",
+Z9 = Rule(["?x is a carnivore", "?x has a tawny color",
            "?x has dark spots"], ["?x is a cheetah"], "Z9")
-Z10 = Rule(["?x is a carnivore", "?x has tawny color",
+Z10 = Rule(["?x is a carnivore", "?x has a tawny color",
             "?x has black stripes"], ["?x is a tiger"], "Z10")
 Z11 = Rule(["?x is an ungulate", "?x has long legs",
-            "?x has long neck", "?x has tawny color", "?x has dark spots"],
+            "?x has a long neck", "?x has a tawny color", "?x has dark spots"],
            ["?x is a giraffe"], "Z11")
 Z12 = Rule(["?x is an ungulate", "?x has white color", "?x has black stripes"],
            ["?x is a zebra"], "Z12")
 Z13 = Rule(["?x is a bird", "?x does not fly",
-            "?x has long legs", "?x has long neck", "?x is black and white"],
+            "?x has long legs", "?x has a long neck", "?x is black and white"],
            ["?x is an ostrich"],  "Z13")
 
 Z14 = Rule(["?x is a bird", "?x does not fly", "Z13",
@@ -136,11 +136,40 @@ class Zookeeper(object):
                 [Z for idx, Z in enumerate(self.rules) if idx != i])
 
     def backward_chaining(self, hypotheses):
-        """Tests set of hypotheses to identify the animal
-        TODO: Implement backward_chaining
+        """Tests whether an animal fits to the working memory
+        TODO: Get the rule corresponding to hypotheses and call recursiveBackward with that rule
         """
+        self.recursiveBackward(self.rules[10])
         return None
 
+    def recursiveBackward(self, rule):
+        if not rule.antecedents_rules:
+            allBasicAntecedentsSatisfied = True
+            for antecedent in rule.antecedents:
+                if antecedent not in self.wm:
+                    allBasicAntecedentsSatisfied = False
+            return allBasicAntecedentsSatisfied
+        else:
+            rulesSatisfied = True
+            for antecedent in rule.antecedents:
+                basicAntecedent = True
+                validRuleExists = False
+                for antecedent_rule in rule.antecedents_rules:
+                    if antecedent in antecedent_rule.consequents:
+                        basicAntecedent = False
+                        if self.recursiveBackward(antecedent_rule):
+                            validRuleExists = True
+                            break
+                if basicAntecedent:
+                    if antecedent not in self.wm:
+                        rulesSatisfied = False
+                        break
+                else:   
+                    if not validRuleExists:
+                        rulesSatisfied = False
+                    
+            return rulesSatisfied
+                                                                                                              
     def __repr__(self):
         return "Zookeeper()"
 
