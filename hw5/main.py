@@ -35,6 +35,7 @@ def main(trace):
     # if trace != "1":
     #    traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
     
+    print("First example of book :")
     animalName = "Stretch"
     wm = ["?x has hair", "?x chews cud", "?x has long legs", "?x has a long neck", "?x has a tawny color", "?x has dark spots"]
 
@@ -43,7 +44,39 @@ def main(trace):
 
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm)
-    animal = zookeeper.backward_chaining(animalName)
+    zookeeper.backward_chaining(animalName)
+
+    print("Second example of book :")
+    animalName = "Swifty"
+    wm = ["?x has forward-pointing eyes", "?x has claws", "?x has pointed teeth", "?x has hair", "?x has a tawny color", "?x has dark spots"]
+
+    # print initial working memory
+    print_working_memory(animalName, wm)
+
+    # run the program in single stepping mode
+    zookeeper = Zookeeper(wm)
+    zookeeper.backward_chaining(animalName)
+
+    print("Our examples :")
+    animalName = "Aamed"
+    wm = ["?x has hoofs", "?x gives milk", "?x has white color", "?x has black stripes"]
+
+    # print initial working memory
+    print_working_memory(animalName, wm)
+
+    # run the program in single stepping mode
+    zookeeper = Zookeeper(wm)
+    zookeeper.backward_chaining(animalName)
+
+    animalName = "Ege"
+    wm = ["?x has hair", "?x eats meat", "?x has a tawny color", "?x has black stripes"]
+
+    # print initial working memory
+    print_working_memory(animalName, wm)
+
+    # run the program in single stepping mode
+    zookeeper = Zookeeper(wm)
+    zookeeper.backward_chaining(animalName)
     
 
 
