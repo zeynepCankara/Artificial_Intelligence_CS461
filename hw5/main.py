@@ -20,7 +20,7 @@ from collections import deque
 import argparse
 
 # the zookeeper system
-from zookeeper import Rule, Zookeeper
+from zookeeper import Rule, Zookeeper, test_rules
 
 
 def main(trace):
@@ -31,6 +31,7 @@ def main(trace):
         traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
     # run the program in single stepping mode
     zookeeper = Zookeeper()
+    test_rules(zookeeper)
 
 
 if __name__ == "__main__":
