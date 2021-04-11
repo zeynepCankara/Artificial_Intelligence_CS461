@@ -114,7 +114,7 @@ Z15 = Rule(["?x is a bird", "?x is a good flyer"],
 
 
 class Zookeeper(object):
-    def __init__(self, wm):
+    def __init__(self, wm, traceMode):
         """Rule based Zookeeper system constructor
         Args:
 
@@ -123,6 +123,7 @@ class Zookeeper(object):
         """
         # TODO: set the rules as a graph structure
         self.wm = wm
+        self.traceMode = traceMode
 
         self.rules = [Z1, Z2, Z3, Z4, Z5, Z6, Z7,
                       Z8, Z9, Z10, Z11, Z12, Z13, Z14, Z15]
@@ -138,9 +139,16 @@ class Zookeeper(object):
         TODO: Get the rule corresponding to hypotheses and call recursiveBackward with that rule
         """
         for i in range(8,15):
-            found = self.recursiveBackward(self.rules[i])
+            if self.traceMode:
+                for final_conseq in self.rules[i].consequents:
+                    print('Checking if', animalName, final_conseq[3:])
+            found = self.recursiveBackward(self.rules[i], animalName)
             if found:
                 break
+            elif self.traceMode:
+                for final_conseq in self.rules[i].consequents:
+                    print(animalName, 'is not a', final_conseq[7:])
+                    print('-' * 25)
         if not found:
             i = -1
             print("Animal is not found!")
@@ -150,10 +158,15 @@ class Zookeeper(object):
                 print()
         
 
-    def recursiveBackward(self, rule):
+    def recursiveBackward(self, rule, animalName):
+        if self.traceMode:
+            print('Checking for rule', rule.rule_no)
         # Initially, assume all rules are satisfied. If there are any counter-examples, make this variable false, return true otherwise
         rulesSatisfied = True 
         for antecedent in rule.antecedents:
+            if self.traceMode:
+                input()
+                print('Checking if', antecedent.replace('?x', animalName))
             # Initially, assume specified antecedent is basic, meaning there are no rules whose consequent is this antecedent
             # If there is any rule which disproves this assumption, make it false
             basicAntecedent = True
@@ -170,7 +183,7 @@ class Zookeeper(object):
                     basicAntecedent = False
 
                     # Call recursiveBackward with this rule
-                    if self.recursiveBackward(antecedent_rule):
+                    if self.recursiveBackward(antecedent_rule, animalName):
                         # Rule is triggered
                         validRuleExists = True
                         break
@@ -180,12 +193,20 @@ class Zookeeper(object):
                 if antecedent not in self.wm:
                     # Antecedent is not in working memory, so rule should not be satisfied
                     rulesSatisfied = False
+                    if self.traceMode:
+                        print('\'' + antecedent.replace('?x', animalName) + '\' is wrong')
                     break
             else:   
                 # Antecedent is not a basic antecedent
                 if not validRuleExists:
                     # There are no satisfied rules whose consequence is specified antecedent 
                     rulesSatisfied = False
+                    if self.traceMode:
+                        print('\'' + antecedent.replace('?x', animalName) + '\' is wrong')
+                    break
+            if self.traceMode:
+                if rulesSatisfied:
+                    print(antecedent.replace('?x', animalName))
 
         return rulesSatisfied
                                                                                                               

@@ -31,9 +31,9 @@ def print_working_memory(animalName, wm):
 def main(trace):
     """Main body to run the program"""
 
-    traceMode = "0"
-    # if trace != "1":
-    #    traceMode = input("Enter 1 for trace mode, 0 otherwise: ")
+    traceMode = False
+    if trace != "1":
+       traceMode = True if input("Enter 1 for trace mode, 0 otherwise: ") == '1' else False
     
     print("First example of book :")
     animalName = "Stretch"
@@ -43,10 +43,10 @@ def main(trace):
     print_working_memory(animalName, wm)
 
     # run the program in single stepping mode
-    zookeeper = Zookeeper(wm)
+    zookeeper = Zookeeper(wm, traceMode)
     zookeeper.backward_chaining(animalName)
 
-    print("Second example of book :")
+    print('#' * 25, "\nSecond example of book :")
     animalName = "Swifty"
     wm = ["?x has forward-pointing eyes", "?x has claws", "?x has pointed teeth", "?x has hair", "?x has a tawny color", "?x has dark spots"]
 
@@ -54,28 +54,29 @@ def main(trace):
     print_working_memory(animalName, wm)
 
     # run the program in single stepping mode
-    zookeeper = Zookeeper(wm)
+    zookeeper = Zookeeper(wm, traceMode)
     zookeeper.backward_chaining(animalName)
 
-    print("Our examples :")
-    animalName = "Aamed"
+    print('#' * 25, "\nOur examples :")
+    animalName = "Zoey"
     wm = ["?x has hoofs", "?x gives milk", "?x has white color", "?x has black stripes"]
 
     # print initial working memory
     print_working_memory(animalName, wm)
 
     # run the program in single stepping mode
-    zookeeper = Zookeeper(wm)
+    zookeeper = Zookeeper(wm, traceMode)
     zookeeper.backward_chaining(animalName)
 
-    animalName = "Ege"
+    animalName = "Coco"
     wm = ["?x has hair", "?x eats meat", "?x has a tawny color", "?x has black stripes"]
 
     # print initial working memory
+    print('#' * 25)
     print_working_memory(animalName, wm)
 
     # run the program in single stepping mode
-    zookeeper = Zookeeper(wm)
+    zookeeper = Zookeeper(wm, traceMode)
     zookeeper.backward_chaining(animalName)
     
 
