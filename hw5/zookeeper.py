@@ -106,8 +106,7 @@ Z12 = Rule(["?x is an ungulate", "?x has white color", "?x has black stripes"],
 Z13 = Rule(["?x is a bird", "?x does not fly",
             "?x has long legs", "?x has a long neck", "?x is black and white"],
            ["?x is an ostrich"],  "Z13")
-
-Z14 = Rule(["?x is a bird", "?x does not fly", "Z13",
+Z14 = Rule(["?x is a bird", "?x does not fly",
             "?x swims", "?x is black and white"], ["?x is a penguin"], "Z14")
 Z15 = Rule(["?x is a bird", "?x is a good flyer"],
            ["?x is an albatross"], "Z15")
@@ -134,21 +133,14 @@ class Zookeeper(object):
             rule.set_antecedents_rules(
                 [Z for idx, Z in enumerate(self.rules) if idx != i])
 
-    def backward_chaining(self, animalName):
+    def backward_chaining(self, animalName, hypothesis):
         """Tests whether an animal fits to the working memory
         TODO: Get the rule corresponding to hypotheses and call recursiveBackward with that rule
         """
-        for i in range(8,15):
-            if self.traceMode:
-                for final_conseq in self.rules[i].consequents:
-                    print('Checking if', animalName, final_conseq[3:])
-            found = self.recursiveBackward(self.rules[i], animalName)
-            if found:
+        for i in range(1,15):
+            if ("?x " + hypothesis) in self.rules[i].consequents:
+                found = self.recursiveBackward(self.rules[i], animalName)
                 break
-            elif self.traceMode:
-                for final_conseq in self.rules[i].consequents:
-                    print(animalName, 'is not a', final_conseq[7:])
-                    print('-' * 25)
         if not found:
             i = -1
             print("Animal is not found!")

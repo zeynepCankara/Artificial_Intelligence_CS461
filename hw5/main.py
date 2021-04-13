@@ -44,7 +44,7 @@ def main(trace):
 
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm, traceMode)
-    zookeeper.backward_chaining(animalName)
+    zookeeper.backward_chaining(animalName, "is a giraffe")
 
     print('#' * 25, "\nSecond example of book :")
     animalName = "Swifty"
@@ -55,7 +55,7 @@ def main(trace):
 
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm, traceMode)
-    zookeeper.backward_chaining(animalName)
+    zookeeper.backward_chaining(animalName, "is a cheetah")
 
     print('#' * 25, "\nOur examples :")
     animalName = "Zoey"
@@ -66,7 +66,7 @@ def main(trace):
 
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm, traceMode)
-    zookeeper.backward_chaining(animalName)
+    zookeeper.backward_chaining(animalName, "is a zebra")
 
     animalName = "Coco"
     wm = ["?x has hair", "?x eats meat", "?x has a tawny color", "?x has black stripes"]
@@ -77,8 +77,18 @@ def main(trace):
 
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm, traceMode)
-    zookeeper.backward_chaining(animalName)
+    zookeeper.backward_chaining(animalName, "is a tiger")
     
+    print('#' * 25, "\nSURPRISE example :")
+    animalName = "Splashy"
+    wm = ["?x is a bird", "?x is a good flyer"]
+
+    # print initial working memory
+    print_working_memory(animalName, wm)
+
+    # run the program in single stepping mode
+    zookeeper = Zookeeper(wm, traceMode)
+    zookeeper.backward_chaining(animalName, "is an albatross")
 
 
 if __name__ == "__main__":
