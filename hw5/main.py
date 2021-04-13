@@ -81,14 +81,14 @@ def main(trace):
     
     print('#' * 25, "\nSURPRISE example :")
     animalName = "Splashy"
-    wm = ["?x is a bird", "?x is a good flyer"]
+    wm = ["?x has feathers", "?x lays eggs" , "?x swims" , "?x does not fly" , "?x is black and white", "?x has a tawny color"]
 
     # print initial working memory
     print_working_memory(animalName, wm)
 
     # run the program in single stepping mode
     zookeeper = Zookeeper(wm, traceMode)
-    zookeeper.backward_chaining(animalName, "is an albatross")
+    zookeeper.backward_chaining(animalName, "is a penguin")
 
 
 if __name__ == "__main__":
