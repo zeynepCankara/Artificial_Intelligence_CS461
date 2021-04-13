@@ -137,7 +137,7 @@ class Zookeeper(object):
         """Tests whether an animal fits to the working memory
         TODO: Get the rule corresponding to hypotheses and call recursiveBackward with that rule
         """
-        for i in range(1,15):
+        for i in range(8,15):
             if ("?x " + hypothesis) in self.rules[i].consequents:
                 found = self.recursiveBackward(self.rules[i], animalName)
                 break
