@@ -230,7 +230,7 @@ class Zookeeper(object):
             type(bool) true if they are equal, false otherwise
         """
         return (
-            self.wm == other.wm and self.rule == other.rules
+            self.wm == other.wm and self.rules == other.rules
         )
 
     def __hash__(self):

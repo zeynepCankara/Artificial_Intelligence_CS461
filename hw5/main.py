@@ -13,6 +13,7 @@
     - Run the program via: python3 main.py
     - you can enable tracing via passing --trace flag (True / False)
     - press the key "Enter" to  iterate in the tracing mode
+    - report.pdf contains the output of the program
 
 """
 # queue
