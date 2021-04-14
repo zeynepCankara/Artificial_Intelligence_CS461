@@ -1,5 +1,6 @@
 """
-@Date: 11/04/2021 ~ Version: 1.0
+@Date: 14/04/2021 ~ Version: 1.1
+@Group: RIDDLER
 @Author: Ahmet Feyzi Halaç
 @Author: Aybars Altınışık
 @Author: Ege Şahin
@@ -8,6 +9,8 @@
 
 
 @Description: A rule based Zookeeper System from Winston chapter 7
+              - Contains classes Zookeeper, Rule
+              - Zookeeper class implements bacward-chaining
 
 """
 
@@ -15,7 +18,7 @@
 class Rule(object):
     def __init__(self, antecedents, consequents, rule_no=""):
         """Antecedent-consequent rules
-        Uses tree structure to find possible descendants
+        Uses tree structure to find possible connections between rules
         Args:
           antecedents, type(list)
           consequents, type(list)
@@ -24,7 +27,9 @@ class Rule(object):
         """
         self.antecedents = set(antecedents)
         self.consequents = set(consequents)
+        # the list of rules leading to current rule
         self.antecedents_rules = []
+        # the list of rules the current rule leads to
         self.consequents_rules = []
         self.rule_no = rule_no
 
@@ -84,7 +89,7 @@ class Rule(object):
         return state_str
 
 
-# define set of rules from Winston ch. 7
+# define set of rules from Winston ch. 7 for the  Zookeeper
 Z1 = Rule(["?x has hair"], ["?x is a mammal"], "Z1")
 Z2 = Rule(["?x gives milk"], ["?x is a mammal"], "Z2")
 Z3 = Rule(["?x has feathers"], ["?x is a bird"], "Z3")
@@ -116,17 +121,19 @@ class Zookeeper(object):
     def __init__(self, wm, traceMode):
         """Rule based Zookeeper system constructor
         Args:
-
+          wm: type(list), working memory
+          traceMode: type(bool), flag for enabling single stepping mode
         Attributes:
-
+          wm: type(list), working memory
+          traceMode: type(bool), flag for enabling single stepping mode
+          rules: type(list(Rule)), list of rules for BC
         """
-        # TODO: set the rules as a graph structure
         self.wm = wm
         self.traceMode = traceMode
 
         self.rules = [Z1, Z2, Z3, Z4, Z5, Z6, Z7,
                       Z8, Z9, Z10, Z11, Z12, Z13, Z14, Z15]
-        # TODO: Iterate over each rules and set the ancestor and consequent rules that can be reachable
+
         for i, rule in enumerate(self.rules):
             rule.set_consequents_rules(
                 [Z for idx, Z in enumerate(self.rules) if idx != i])
@@ -134,10 +141,9 @@ class Zookeeper(object):
                 [Z for idx, Z in enumerate(self.rules) if idx != i])
 
     def backward_chaining(self, animalName, hypothesis):
-        """Tests whether an animal fits to the working memory
-        TODO: Get the rule corresponding to hypotheses and call recursiveBackward with that rule
+        """Tests the animal against hypothesis
         """
-        for i in range(8,15):
+        for i in range(8, 15):
             if ("?x " + hypothesis) in self.rules[i].consequents:
                 found = self.recursiveBackward(self.rules[i], animalName)
                 break
@@ -148,13 +154,12 @@ class Zookeeper(object):
             for final_conseq in self.rules[i].consequents:
                 print(animalName, final_conseq[3:])
                 print()
-        
 
     def recursiveBackward(self, rule, animalName):
         if self.traceMode:
             print('Checking for rule', rule.rule_no)
         # Initially, assume all rules are satisfied. If there are any counter-examples, make this variable false, return true otherwise
-        rulesSatisfied = True 
+        rulesSatisfied = True
         for antecedent in rule.antecedents:
             if self.traceMode:
                 input()
@@ -186,22 +191,24 @@ class Zookeeper(object):
                     # Antecedent is not in working memory, so rule should not be satisfied
                     rulesSatisfied = False
                     if self.traceMode:
-                        print('\'' + antecedent.replace('?x', animalName) + '\' is wrong')
+                        print('\'' + antecedent.replace('?x',
+                                                        animalName) + '\' is wrong')
                     break
-            else:   
+            else:
                 # Antecedent is not a basic antecedent
                 if not validRuleExists:
-                    # There are no satisfied rules whose consequence is specified antecedent 
+                    # There are no satisfied rules whose consequence is specified antecedent
                     rulesSatisfied = False
                     if self.traceMode:
-                        print('\'' + antecedent.replace('?x', animalName) + '\' is wrong')
+                        print('\'' + antecedent.replace('?x',
+                                                        animalName) + '\' is wrong')
                     break
             if self.traceMode:
                 if rulesSatisfied:
                     print(antecedent.replace('?x', animalName))
 
         return rulesSatisfied
-                                                                                                              
+
     def __repr__(self):
         return "Zookeeper()"
 
@@ -210,16 +217,21 @@ class Zookeeper(object):
         Returns:
             type(str), formatted string
         """
-        state_str = ""
+        state_str = "*** Zookeeper *** \n"
+        state_str += "working memory: \n" + str(self.wm) + "\n"
+        state_str += "rules: \n" + str(self.rules) + "\n"
         return state_str
 
     def __eq__(self, other):
-        """Comparison function for states
+        """Comparison function for Zookeepers
         Args:
             other: type(State), state to be compared
         Returns:
             type(bool) true if they are equal, false otherwise
         """
+        return (
+            self.wm == other.wm and self.rule == other.rules
+        )
 
     def __hash__(self):
         """Calculates an hash number from the properties indicated.
@@ -229,16 +241,7 @@ class Zookeeper(object):
         """
         return hash(
             (
+                self.wm,
                 self.rules,
             )
         )
-
-
-def test_rules(zookeeper):
-    for rule in zookeeper.rules:
-        print("Rule \n")
-        print(rule)
-        print("consequent rules \n")
-        print(rule.consequents_rules)
-        print("antecedents rules \n")
-        print(rule.antecedents_rules)
