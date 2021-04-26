@@ -10,7 +10,7 @@
 
 @Description: Obtains the class-precedence list (CPL)
       for a given class hierarchy from "fish hook algorithm",
-      Winston chapter 14
+      Winston chapter 9
 
     - implements fish hook algorithm to build CPL
     - Run the program via: python3 main.py
@@ -20,9 +20,6 @@
 
 """
 
-# queue
-from collections import deque
-
 # parser to run trace mode
 import argparse
 
@@ -31,14 +28,13 @@ from cpl import CPL, Graph
 
 def main(trace):
     """Main body to run the program"""
-
-    traceMode = False
+    trace_mode = False
     if trace != "1":
-        traceMode = True if input(
+        trace_mode = True if input(
             "Note: press key (Enter) to iterate in the tracing mode \n" +
             "Enter 1 for trace mode, 0 otherwise: ") == '1' else False
 
-    # Define the examples A and B
+    # Define the Example A as an Adjacency List Graph
     exampleA = Graph({"Squares", "Rectangles", "Rhombuses",
                       "Parallelograms", "Isosceles Trapezoids", "Trapezoids",
                       "Cyclic Quadrilaterals", "Kites", "Quadrilaterals"})
@@ -55,12 +51,7 @@ def main(trace):
     exampleA.add_direct_superclasses("Trapezoids", ["Quadrilaterals"])
     exampleA.add_direct_superclasses("Kites", ["Quadrilaterals"])
 
-    cpl = CPL(exampleA, "Squares")
-    print("fish hook table")
-    print(cpl.fish_hook_pairs)  # check fish hook pairs
-    print("cpl list")
-    print(cpl.cpl)
-
+    # Define the Example B as an Adjacency List Graph
     exampleB = Graph({"Squares", "Rectangles", "Rhombuses",
                       "Parallelograms", "Isosceles Trapezoids", "Trapezoids",
                       "Cyclic Quadrilaterals", "Kites", "Quadrilaterals"})
@@ -77,17 +68,24 @@ def main(trace):
     exampleB.add_direct_superclasses("Trapezoids", ["Quadrilaterals"])
     exampleB.add_direct_superclasses("Kites", ["Quadrilaterals"])
 
-    print("example B, Isosceles Trapezoids")
-    cpl = CPL(exampleB, "Isosceles Trapezoids")
-    print("fish hook table")
-    print(cpl.fish_hook_pairs)  # check fish hook pairs
-    print("cpl list")
+    # Example 1: Compute a CPL for “Squares”
+    cpl = CPL(exampleA, "Squares", trace_mode)
+    print("CPL List: ")
+    print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
     print(cpl.cpl)
-    print("example B, Squares")
-    cpl = CPL(exampleB, "Squares")
-    print("fish hook table")
-    print(cpl.fish_hook_pairs)  # check fish hook pairs
-    print("cpl list")
+
+    # Example 2: Compute a CPL for “Isosceles Trapezoids”
+    print("Example B: Isosceles Trapezoids")
+    cpl = CPL(exampleB, "Isosceles Trapezoids", trace_mode)
+    print("CPL List: ")
+    print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
+    print(cpl.cpl)
+
+    # Example 2: Compute a CPL for “Squares”
+    print("Example B: Squares")
+    cpl = CPL(exampleB, "Squares", trace_mode)
+    print("CPL List: ")
+    print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
     print(cpl.cpl)
 
 
@@ -98,7 +96,7 @@ if __name__ == "__main__":
         metavar="path",
         required=False,
         help="tracing option for the program ('1': True / '0': False)"
-        + "press key (Enter) to iterate in the tracing mode",
+        + "press the key (Enter) to iterate in the tracing mode",
     )
     args = parser.parse_args()
     main(trace=args.trace)
