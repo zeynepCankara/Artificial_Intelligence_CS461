@@ -78,6 +78,7 @@ class State(object):
 
 
 def getAnswersForClue(clue, length):
+    # TODO: Find better dummy answers for proper debugging
     dummyAnswers = {
     'Test of responsibility before a pet or kid':       ['plant', 'pants', 'shity', 'water'],
     'Word before student or system ':                   ['honor', 'ahmet', 'memet'],
