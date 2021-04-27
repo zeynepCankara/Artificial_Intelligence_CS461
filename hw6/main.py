@@ -69,6 +69,7 @@ def main(trace):
     exampleB.add_direct_superclasses("Kites", ["Quadrilaterals"])
 
     # Example 1: Compute a CPL for “Squares”
+    print("Example A: Squares")
     cpl = CPL(exampleA, "Squares", trace_mode)
     print("CPL List: ")
     print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
@@ -84,6 +85,43 @@ def main(trace):
     # Example 2: Compute a CPL for “Squares”
     print("Example B: Squares")
     cpl = CPL(exampleB, "Squares", trace_mode)
+    print("CPL List: ")
+    print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
+    print(cpl.cpl)
+
+    exampleS = Graph({"Crazy", "Professors", "Hackers",
+                      "Eccentrics", "Teachers", "Programmers",
+                      "Dwarfs", "Athletes", "Everything", "Endomorphs",
+                      "Weightlifters", "Shotputters", "Jacque"})
+    exampleS.add_direct_superclasses("Crazy", ["Professors", "Hackers"])
+    exampleS.add_direct_superclasses("Professors",
+                                     ["Eccentrics", "Teachers"])
+    exampleS.add_direct_superclasses("Hackers",
+                                     ["Eccentrics", "Programmers"])
+    exampleS.add_direct_superclasses("Eccentrics", ["Dwarfs"])
+    exampleS.add_direct_superclasses("Teachers", ["Dwarfs"])
+    exampleS.add_direct_superclasses("Programmers", ["Dwarfs"])
+    exampleS.add_direct_superclasses("Dwarfs", ["Everything"])
+    exampleS.add_direct_superclasses("Athletes", ["Dwarfs"])
+    exampleS.add_direct_superclasses("Endomorphs", ["Dwarfs"])
+    exampleS.add_direct_superclasses("Weightlifters",
+                                     ["Athletes", "Endomorphs"])
+    exampleS.add_direct_superclasses("Shotputters",
+                                     ["Athletes", "Endomorphs"])
+    exampleS.add_direct_superclasses("Jacque",
+                                     ["Weightlifters",
+                                      "Shotputters", "Athletes"])
+
+    # Surprise Example: Compute a CPL for “Crazy”
+    print("Surprise Example: Crazy")
+    cpl = CPL(exampleS, "Crazy", trace_mode)
+    print("CPL List: ")
+    print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
+    print(cpl.cpl)
+
+    # Surprise Example: Compute a CPL for “Crazy”
+    print("Surprise Example: Jacque")
+    cpl = CPL(exampleS, "Jacque", trace_mode)
     print("CPL List: ")
     print("high", " " * max(len(str(cpl.cpl))-10, 0), "low")
     print(cpl.cpl)
