@@ -90,7 +90,9 @@ class CPL(object):
         # update the fish hooks and exposed items list
         for node, pair in self.fish_hook_pairs.items():
             for pair_item1, pair_item2 in pair:
-                if pair_item1 == exposed or pair_item2 == exposed and (pair_item1, pair_item2) not in self.visited_fish_hook_pairs:
+                if (pair_item1 == exposed
+                    or pair_item2 == exposed and (pair_item1, pair_item2)
+                        not in self.visited_fish_hook_pairs):
                     # strike out the pair
                     self.visited_fish_hook_pairs.add((pair_item1, pair_item2))
                     self.exposed_table[pair_item2][1] -= 1
@@ -136,7 +138,7 @@ class CPL(object):
             self.print_fish_hook_pairs()
             print("--- CPL ---")
             print(self.cpl, "\n")
-            input()
+            input("> Press the key 'Enter' to continue: ")
 
         exposed = None
         if len(self.exposed_items) == 1:

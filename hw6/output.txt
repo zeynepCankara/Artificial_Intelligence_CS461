@@ -1,0 +1,22 @@
+Note: press key (Enter) to iterate in the tracing mode
+Enter 1 for trace mode, 0 otherwise:
+Example A: Squares
+CPL List:
+high                                                                                                                                          low
+['Squares', 'Rectangles', 'Isosceles Trapezoids', 'Cyclic Quadrilaterals', 'Rhombuses', 'Parallelograms', 'Trapezoids', 'Kites', 'Quadrilaterals']
+Example B: Isosceles Trapezoids
+CPL List:
+high                                                                                                                                          low
+['Isosceles Trapezoids', 'Trapezoids', 'Squares', 'Rectangles', 'Cyclic Quadrilaterals', 'Rhombuses', 'Parallelograms', 'Kites', 'Quadrilaterals']
+Example B: Squares
+CPL List:
+high                                                                                                                                          low
+['Squares', 'Rectangles', 'Rhombuses', 'Isosceles Trapezoids', 'Trapezoids', 'Cyclic Quadrilaterals', 'Parallelograms', 'Kites', 'Quadrilaterals']
+Surprise Example: Crazy
+CPL List:
+high                                                                                                                                                               low
+['Crazy', 'Professors', 'Hackers', 'Eccentrics', 'Programmers', 'Teachers', 'Jacque', 'Weightlifters', 'Shotputters', 'Athletes', 'Endomorphs', 'Dwarfs', 'Everything']
+Surprise Example: Jacque
+CPL List:
+high                                                                                                                                                               low
+['Jacque', 'Weightlifters', 'Shotputters', 'Athletes', 'Endomorphs', 'Crazy', 'Professors', 'Hackers', 'Eccentrics', 'Programmers', 'Teachers', 'Dwarfs', 'Everything']

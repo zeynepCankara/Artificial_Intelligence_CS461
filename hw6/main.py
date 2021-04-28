@@ -14,9 +14,9 @@
 
     - implements fish hook algorithm to build CPL
     - Run the program via: python3 main.py
-    - you can enable tracing via passing --trace flag (True / False)
+    - you can enable tracing via passing --trace flag (1 / 0)
     - press the key "Enter" to  iterate in the tracing mode
-    - report.pdf contains the output of the program
+    - output.txt Contains the example run
 
 """
 
@@ -29,7 +29,13 @@ from cpl import CPL, Graph
 def main(trace):
     """Main body to run the program"""
     trace_mode = False
-    if trace != "1":
+    if trace == "1":
+        trace_mode = True
+        print("Note: press key (Enter) to iterate in the tracing mode \n")
+    elif trace == "0":
+        trace_mode = False
+    else:
+        # no flag provided ask the user manually
         trace_mode = True if input(
             "Note: press key (Enter) to iterate in the tracing mode \n" +
             "Enter 1 for trace mode, 0 otherwise: ") == '1' else False
