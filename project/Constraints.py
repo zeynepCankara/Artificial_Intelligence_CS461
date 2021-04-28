@@ -19,7 +19,21 @@ class Constraint(object):
                     count = count + 1
         
         return count
-        
+
+    def applyConstraint(self, clue, answer, domains):
+        i = 0
+        if clue == self.acrossClue:
+            while i < len(domains[self.downClue]):
+                if answer[self.acrossIndex] != domains[self.downClue][i][self.downIndex]:
+                    domains[self.downClue].remove(domains[self.downClue][i])
+                else:
+                    i = i + 1
+        else:
+            while i < len(domains[self.acrossClue]):
+                if answer[self.downIndex] != domains[self.acrossClue][i][self.acrossIndex]:
+                    domains[self.acrossClue].remove(domains[self.acrossClue][i])
+                else:
+                    i = i + 1
 
 class Constraints(object):
     def __init__(self, puzzleInformation):
@@ -52,13 +66,24 @@ class Constraints(object):
                         downIndex = downIndex + 1
                     break 
     
+    def findConstraintsForClue(self, clue):
+        result = []
+        if 'a' in clue:
+            result = filter(lambda constraint: constraint.acrossClue == clue, self.constraints)
+        else:
+            result = filter(lambda constraint: constraint.downClue == clue, self.constraints)   
+        return list(result)
+
     def getTotalReductionForAnswer(self, clue, answer, domains):
         total = 0
-        for constraint in self.constraints:
-            if clue == constraint.acrossClue or clue == constraint.downClue:
-                total = total + constraint.getReductionCountForAnswer(clue, answer, domains)
+        for constraint in self.findConstraintsForClue(clue):
+            total = total + constraint.getReductionCountForAnswer(clue, answer, domains)
         return total
     
+    def reduceDomainsWithAnswer(self, clue, answer, domains):
+        for constraint in self.findConstraintsForClue(clue):
+            constraint.applyConstraint(clue, answer, domains)
+
     def shrinkInitialDomains(self, domains):
         for constraint in self.constraints:
             acrossChars = list(map(lambda x: x[constraint.acrossIndex], domains[constraint.acrossClue]))
