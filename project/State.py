@@ -4,14 +4,17 @@ from findAnswer import calculateInitialDomains
 import copy
 
 # TODO: Write better comments before submitting the project, my comments' purpose is explaining the code to you (Ahmet)
+
+# Change this ID to test other puzzles (look at parsePuzzle.py:33)
+puzzleID = 2
 class State(object):
     # Make puzzleInformation and constraints static variable, since they don't change for a single puzzle (in every State, this information will be same)
-    puzzleInformation = parsePuzzle(debug=True)
+    puzzleInformation = parsePuzzle(puzzleID)
     constraints = Constraints(puzzleInformation)
 
     def __init__(self, domains = False, filledDomains = {}):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
-            self.domains = calculateInitialDomains(self.puzzleInformation)
+            self.domains = calculateInitialDomains(self.puzzleInformation, puzzleID)
             self.constraints.shrinkInitialDomains(self.domains)
         else:
             self.domains = domains

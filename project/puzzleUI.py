@@ -32,7 +32,7 @@ def hideAnswers(boxList):
             boxList[i].hide()
         i += 1
        
-puzzleInformation = parsePuzzle(debug=True)
+puzzleInformation = parsePuzzle(puzzleID=1)
 
 # creating main tkinter window/toplevel 
 master = Tk()
