@@ -1,3 +1,4 @@
+# TODO: Add comments
 class Constraint(object):
     def __init__(self, acrossClue, acrosIndex, downClue, downIndex):
         self.acrossClue = acrossClue
