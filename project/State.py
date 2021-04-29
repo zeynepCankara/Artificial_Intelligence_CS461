@@ -1,6 +1,7 @@
 from parsePuzzle import parsePuzzle
 from Constraints import Constraints
 from findAnswer import calculateInitialDomains
+from collections import deque
 import copy
 
 # TODO: Write better comments before submitting the project, my comments' purpose is explaining the code to you (Ahmet)
@@ -18,20 +19,41 @@ class State(object):
             self.constraints.shrinkInitialDomains(self.domains)
         else:
             self.domains = domains
+        self.lastAnswer = ()
         self.filledDomains = filledDomains
+
+    def __eq__(self, other):
+        # For 'in' operation to work correctly, we must implement a custom equality operator
+        return self.domains == other.domains and self.filledDomains == other.filledDomains
+    
+    def __repr__(self):
+        # In the debug panel, states can be visualized better if we represent them by their filledDomains
+        return str(self.filledDomains)
+
+    def __hash__(self):
+        # To add a State object to a set, we must implement a hash function
+        return hash(str((self.domains, self.filledDomains)))
 
     def fillDomain(self, clue, answer):
         # This function fills the cells corresponding to this clue and update domains according to the answer
         self.filledDomains[clue] = answer
         State.constraints.reduceDomainsWithAnswer(clue, answer, self.domains)
+        self.lastAnswer = (clue, answer)
 
     def isStuck(self):
-        # TODO: Check whether current state is stuck
-        print()
+        if self.isGoal(): # If it is goal state, return False immediately
+            return False
+
+        for clue, answer in State.puzzleInformation['answers'].items():
+            if clue not in self.filledDomains.keys(): # There is a clue which is not answered yet, so state is not stucked
+                return False
+
+        # All clues are answered since all of them are present in filledDomains. However, it is not goal state because of the initial check in this function
+        # So, this state is definitely stuck
+        return True
 
     def isGoal(self):
-        # TODO: Check whether current state is goal state
-        print()
+        return State.puzzleInformation['answers'] == self.filledDomains
 
     def getNewState(self, clueAnswerPair):
         # This function creates a deep copy from the current state and fills a clue with the specified answer in new state. Then return this state
@@ -57,11 +79,12 @@ class State(object):
                     clueAnswerPairs.append({
                         'clue': clue,
                         'answer': answer,
-                        'possibleDomainReduction': self.constraints.getTotalReductionForAnswer(clue, answer, self.domains)
+                        'possibleDomainReduction': self.constraints.getTotalReductionForAnswer(clue, answer, self.domains, self.filledDomains)
                     })
 
-        clueAnswerPairs.sort(reverse=True, key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction (Greater is first)
-        return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list
+        clueAnswerPairs = list(filter(lambda x: x['possibleDomainReduction'] != -1,clueAnswerPairs)) # Eliminate impossible clue answer pairs (which will eliminate all possible answers for another domain)
+        clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
+        return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list along with the clue answer pair for dynamic programming
 
 def main():
     """Main body to run the program"""
