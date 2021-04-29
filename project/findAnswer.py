@@ -3,28 +3,40 @@ def getAnswersForClue(clue, length, puzzleID):
     # TODO: Find new dummy answer set for every puzzle (Every day I will fetch new puzzle and store it with puzzleID => look parsePuzzle.py:33)
     dummyAnswers = {
         1: {
-            'Test of responsibility before a pet or kid':       ['plant', 'pants', 'shity', 'water'],
-            'Word before student or system ':                   ['honor', 'ahmet', 'memet'],
-            'First line on the phone to someone you know well': ['itsme', 'kitty', 'pitty'],
-            'Rare order at a restaurant':                       ['steak', 'forty'],
-            'Waits on the phone':                               ['holds', 'hodor', 'hello'],
-            'Jam band fronted by guitarist Trey Anastasio':     ['phish', 'ssshh', 'papfh'],
-            'Scratch-off ticket game':                          ['lotto', 'cozyy', 'proud', 'ahioo'],
-            '"Moon And Half Dome" photographer Adams':          ['ansel', 'fancy', 'nmtrd'],
-            'Wanderer':                                         ['nomad', 'pomad', 'comar', 'tetto'],
-            'Arduous journeys':                                 ['treks', 'shrek', 'melek', 'styyr']
+            'Test of responsibility before a pet or kid':       ['PLANT', 'PANTS', 'SHITY', 'WATER'],
+            'Word before student or system ':                   ['HONOR', 'AHMET', 'MEMET'],
+            'First line on the phone to someone you know well': ['ITSME', 'KITTY', 'PITTY'],
+            'Rare order at a restaurant':                       ['STEAK', 'FORTY'],
+            'Waits on the phone':                               ['HOLDS', 'HODOR', 'HELLO'],
+            'Jam band fronted by guitarist Trey Anastasio':     ['PHISH', 'SSSHH', 'PAPFH'],
+            'Scratch-off ticket game':                          ['LOTTO', 'COZYY', 'PROUD', 'AHIOO'],
+            '"Moon And Half Dome" photographer Adams':          ['ANSEL', 'FANCY', 'NMTRD'],
+            'Wanderer':                                         ['NOMAD', 'POMAD', 'COMAR', 'TETTO'],
+            'Arduous journeys':                                 ['TREKS', 'SHREK', 'MELEK', 'STYYR']
         },
         2: {
-            'What Calvin and Hobbes are seen riding in the final "Calvin and Hobbes" strip': ['sled'],
-            'First episode of a TV show': ['pilot'],
-            '"My Fair Lady" lady'       : ['eliza'],
-            'Marathon handout'          : ['water'],
-            '¢'                         : ['cent'],
-            'Gush forth'                : ['spew'], 
-            'Fragrant spring flower'    : ['lilac'],
-            'Upper class'               : ['elite'],
-            'Common donut order'        : ['dozen'],
-            'Sour-tasting'              : ['tart']
+            'What Calvin and Hobbes are seen riding in the final "Calvin and Hobbes" strip': ['SLED'],
+            'First episode of a TV show': ['PILOT'],
+            '"My Fair Lady" lady'       : ['ELIZA'],
+            'Marathon handout'          : ['WATER'],
+            '¢'                         : ['CENT'],
+            'Gush forth'                : ['SPEW'], 
+            'Fragrant spring flower'    : ['LILAC'],
+            'Upper class'               : ['ELITE'],
+            'Common donut order'        : ['DOZEN'],
+            'Sour-tasting'              : ['TART']
+        },
+        3: {
+            'Web page … and a homophone of 1- and 5-Down'   : ['SITE'],
+            'Polite'                                        : ['CIVIL'],
+            '"O.K., you win"'                               : ['IGIVE'],
+            '2000s Fox drama set in Newport Beach'          : ['THEOC'],
+            'Aliens, for short'                             : ['ETS'],
+            'One of the senses'                             : ['SIGHT'],
+            'Wall-climbing plants'                          : ['IVIES'],
+            'Save for later viewing'                        : ['TIVO'],
+            'Monthly utility bill: Abbr.'                   : ['ELEC'],
+            'Credit in a footnote'                          : ['CITE']
         }
     }
 
