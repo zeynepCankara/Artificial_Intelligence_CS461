@@ -6,15 +6,18 @@ class Constraint(object):
         self.downClue = downClue
         self.downIndex = downIndex
     
-    def getReductionCountForAnswer(self, clue, answer, domains):
+    def getReductionCountForAnswer(self, clue, answer, domains, filledDomains):
         count = 0
-        if clue == self.acrossClue:
+        if clue == self.acrossClue and self.downClue not in filledDomains.keys():
             downChars =  list(map(lambda x: x[self.downIndex], domains[self.downClue]))
             for char in downChars:
                 if answer[self.acrossIndex] != char:
                     count = count + 1
-        else:
+        elif clue == self.downClue and self.acrossClue not in filledDomains.keys():
             acrossChars = list(map(lambda x: x[self.acrossIndex], domains[self.acrossClue]))
+            if answer[self.downIndex] not in acrossChars:
+                # This means filling this clue with specified answer will eliminate all possible answers for different domain, so this answer is definitely false
+                return -1
             for char in acrossChars:
                 if answer[self.downIndex] != char:
                     count = count + 1
@@ -75,10 +78,14 @@ class Constraints(object):
             result = filter(lambda constraint: constraint.downClue == clue, self.constraints)   
         return list(result)
 
-    def getTotalReductionForAnswer(self, clue, answer, domains):
+    def getTotalReductionForAnswer(self, clue, answer, domains, filledDomains):
         total = 0
         for constraint in self.findConstraintsForClue(clue):
-            total = total + constraint.getReductionCountForAnswer(clue, answer, domains)
+            reduction = constraint.getReductionCountForAnswer(clue, answer, domains, filledDomains)
+            if reduction == -1:
+                # One of the constraints indicates that filling this clue with specified answer will eliminate all answers for a different domain
+                return -1
+            total = total + reduction
         return total
     
     def reduceDomainsWithAnswer(self, clue, answer, domains):
