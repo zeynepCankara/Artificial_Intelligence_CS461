@@ -86,11 +86,56 @@ class State(object):
         clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
         return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list along with the clue answer pair for dynamic programming
 
+def search():
+    # TODO: We should move this function to another place in order to show resulting puzzle with graphics
+
+    initialState = State()
+
+    if initialState.isGoal():
+        return [initialState]
+    
+    currentPath = [initialState]
+
+    queue = deque([currentPath])
+
+    # For dynamic programming
+    triedAnswers = set()
+
+    while queue:
+        visited = set()
+        currentPath = queue.popleft()
+        currentState = currentPath[len(currentPath) - 1]
+
+        if currentState.isGoal():
+            return currentPath
+
+        if currentState.isStuck():
+            continue
+
+        if currentState.lastAnswer in triedAnswers:
+            continue
+        else:
+            triedAnswers.add(currentState.lastAnswer)
+        
+        for state in currentPath:
+            visited.add(state)
+        
+
+        nextStates = currentState.getNextStates()
+
+        for nextState in nextStates:
+            if nextState in visited:
+                continue
+                
+            tempPath = copy.deepcopy(currentPath)
+            tempPath.append(nextState)
+            queue.insert(0, tempPath)
+
 def main():
     """Main body to run the program"""
     
-    state = State()
-    temp = state.getNextStates() # For debugging purposes for now
+    # This path shows correct insertion of answers. Last state will be the solved puzzle
+    resultPath = search()
     return 0
 
 

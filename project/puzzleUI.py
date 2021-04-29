@@ -99,6 +99,6 @@ dateLabel.grid(row = 17, column = 2, columnspan = 3, sticky = "e")
 # time label
 timeLabel = Label(master, text = now.strftime("Time : %H:%M:%S"), font="franklin 14")
 timeLabel.grid(row = 18, column = 2, columnspan = 3, sticky = "e")
-  
+
 mainloop() 
 
