@@ -1,7 +1,7 @@
 from parsePuzzle import parsePuzzle
 from Constraints import Constraints
 from findAnswer import calculateInitialDomains
-from collections import deque
+from collections import deque, OrderedDict
 import copy
 
 # TODO: Write better comments before submitting the project, my comments' purpose is explaining the code to you (Ahmet)
@@ -13,7 +13,7 @@ class State(object):
     puzzleInformation = parsePuzzle(puzzleID)
     constraints = Constraints(puzzleInformation)
 
-    def __init__(self, domains = False, filledDomains = {}):
+    def __init__(self, domains = False, filledDomains = OrderedDict()):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
             self.domains = calculateInitialDomains(self.puzzleInformation, puzzleID)
             self.constraints.shrinkInitialDomains(self.domains)
@@ -85,6 +85,12 @@ class State(object):
         clueAnswerPairs = list(filter(lambda x: x['possibleDomainReduction'] != -1,clueAnswerPairs)) # Eliminate impossible clue answer pairs (which will eliminate all possible answers for another domain)
         clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
         return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list
+
+def log(log):
+    # For now, I am just printing log to the console
+    # TODO: We should implement functions so that these logs (Like inserting an answer to a clue) can be seen graphically
+    print(log)
+
 def search():
     # TODO: We should move this function to another place in order to show resulting puzzle with graphics
 
@@ -105,16 +111,15 @@ def search():
 
         print(currentState.filledDomains)
         if currentState.isGoal():
+            log('Goal state of the puzzle is found!')
             return currentPath
 
         if currentState.isStuck():
             continue
 
-        
         for state in currentPath:
             visited.add(state)
         
-
         nextStates = currentState.getNextStates()
 
         for nextState in nextStates:
