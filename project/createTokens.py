@@ -12,8 +12,8 @@ def getSearchedTokens(clue):
     
     punctuationFree = clue.translate(str.maketrans('', '', string.punctuation))
 
-    tokens = word_tokenize(punctuationFree)
-    tokens = [w for w in tokens if not w in stopWords]
+    tokens = word_tokenize(punctuationFree)             # split the punctiuation free clue to tokens (list)
+    tokens = [w for w in tokens if not w in stopWords]  # remove stopwordss from tokens
 
     tokenNum = len(tokens)
     for i in range(tokenNum):
