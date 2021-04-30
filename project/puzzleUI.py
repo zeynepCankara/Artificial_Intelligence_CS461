@@ -103,8 +103,10 @@ timeLabel.grid(row = 18, column = 9, columnspan = 3, sticky = "e")
 def executeOperation(operation, cell, index):
     if operation['type'] == 'insert':
         cell.insert(operation['answer'][index])
+        cell.changeColor('khaki')
     elif operation['type'] == 'update':
         cell.insert(operation['nextAnswer'][index])
+        cell.changeColor('cyan2')
     else:
         cell.hide()
 
@@ -115,6 +117,7 @@ def handleOperation(operation):
     if operation['type'] == 'goal':
         for cell in solved:
             cell.changeColor('pale green')
+        return
     
     clueNumber = int(operation['domain'][0])
     if 'd' in operation['domain']:

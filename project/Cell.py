@@ -36,7 +36,6 @@ class Cell(Frame):
             self.letter.place(relx=0.5, rely=0.6, anchor=CENTER)
     
     def insert(self, letter):
-        self.changeColor('khaki')
         self.letter.config(text=letter)
         self.reveal()
     
