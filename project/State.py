@@ -1,13 +1,11 @@
 from parsePuzzle import parsePuzzle
 from Constraints import Constraints
 from findAnswer import calculateInitialDomains
-from collections import deque, OrderedDict
+from collections import OrderedDict
 import copy
+from puzzleID import puzzleID
 
 # TODO: Write better comments before submitting the project, my comments' purpose is explaining the code to you (Ahmet)
-
-# Change this ID to test other puzzles (look at parsePuzzle.py:33)
-puzzleID = 1
 class State(object):
     # Make puzzleInformation and constraints static variable, since they don't change for a single puzzle (in every State, this information will be same)
     puzzleInformation = parsePuzzle(puzzleID)
@@ -86,49 +84,6 @@ class State(object):
         clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
         return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list
 
-def log(log):
-    # For now, I am just printing log to the console
-    # TODO: We should implement functions so that these logs (Like inserting an answer to a clue) can be seen graphically
-    print(log)
-
-def search():
-    # TODO: We should move this function to another place in order to show resulting puzzle with graphics
-
-    initialState = State()
-
-    if initialState.isGoal():
-        return [initialState]
-    
-    currentPath = [initialState]
-
-    queue = deque([currentPath])
-
-
-    while queue:
-        visited = set()
-        currentPath = queue.popleft()
-        currentState = currentPath[len(currentPath) - 1]
-
-        print(currentState.filledDomains)
-        if currentState.isGoal():
-            log('Goal state of the puzzle is found!')
-            return currentPath
-
-        if currentState.isStuck():
-            continue
-
-        for state in currentPath:
-            visited.add(state)
-        
-        nextStates = currentState.getNextStates()
-
-        for nextState in nextStates:
-            if nextState in visited:
-                continue
-                
-            tempPath = copy.deepcopy(currentPath)
-            tempPath.append(nextState)
-            queue.insert(0, tempPath)
 
 def main():
     """Main body to run the program"""
