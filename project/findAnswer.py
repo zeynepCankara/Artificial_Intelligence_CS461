@@ -43,9 +43,9 @@ def getAnswersForClue(clue, length, puzzleID):
     }
 
     # TODO: Get possible answers with specified length for clue
-    #getPossibleAnswers(clue, length)
+    return getPossibleAnswers(clue, length)
     
-    return dummyAnswers[puzzleID][clue]
+    #return dummyAnswers[puzzleID][clue]
 
 def getLengthOfClueAnswer(key, isAcross, puzzleInformation):
     for i in range(0, len(puzzleInformation['cells'])):

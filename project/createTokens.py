@@ -16,13 +16,16 @@ def getSearchedTokens(clue):
     tokens = [w for w in tokens if not w in stopWords]  # remove stopwordss from tokens
 
     tokenNum = len(tokens)
+
+    # for i in range(tokenNum):
+    #     if i != tokenNum - 1:
+    #         tokens.append(tokens[i] + " " + tokens[i + 1])
+    # tokens.append(clue)
+
     for i in range(tokenNum):
-        if i != tokenNum - 1:
-            tokens.append(tokens[i] + " " + tokens[i + 1])
-    """
-    for i in range(tokenNum):
-        if i != tokenNum - 2:
-            tokens.append(tokens[i] + " " + tokens[i + 1] + " " + tokens[i + 2])
-        else:
-            break"""
+        new_token = tokens[i]
+        for j in range(i+1,tokenNum):
+            new_token = new_token + " " + tokens[j]
+            tokens.append(new_token)
+
     return tokens
