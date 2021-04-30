@@ -1,3 +1,5 @@
+from getPossibleAnswers import getPossibleAnswers
+
 def getAnswersForClue(clue, length, puzzleID):
     # TODO: Find better dummy answers for proper debugging
     # TODO: Find new dummy answer set for every puzzle (Every day I will fetch new puzzle and store it with puzzleID => look parsePuzzle.py:33)
@@ -41,6 +43,7 @@ def getAnswersForClue(clue, length, puzzleID):
     }
 
     # TODO: Get possible answers with specified length for clue
+    #getPossibleAnswers(clue, length)
     
     return dummyAnswers[puzzleID][clue]
 
