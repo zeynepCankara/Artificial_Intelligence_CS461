@@ -19,10 +19,10 @@ def getSearchedTokens(clue):
     for i in range(tokenNum):
         if i != tokenNum - 1:
             tokens.append(tokens[i] + " " + tokens[i + 1])
-
+    """
     for i in range(tokenNum):
         if i != tokenNum - 2:
             tokens.append(tokens[i] + " " + tokens[i + 1] + " " + tokens[i + 2])
         else:
-            break
+            break"""
     return tokens
