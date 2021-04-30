@@ -16,11 +16,11 @@ class Cell(Frame):
     def __init__(self, parent, isBlack=False, number=None, letter=None):
         Frame.__init__(self, parent, height=100, width=100, bg="black" if isBlack else "white", highlightthickness=1)
         self.config(highlightbackground='grey')
-
+        self.isBlack = isBlack
         if not isBlack:
             
             if number:
-                topleft = Label(self, text=number, font="franklin 20", bg="white")
+                self.topLeft = topleft = Label(self, text=number, font="franklin 20", bg="white")
                 topleft.place(relx=0.05, rely=0.05, anchor=NW)
 
             if letter:
@@ -29,7 +29,21 @@ class Cell(Frame):
     def hide(self):
         if hasattr(self, "letter"):
             self.letter.place_forget()
-
+        self.changeColor('tomato')
+        
     def reveal(self):
         if hasattr(self, "letter"):
             self.letter.place(relx=0.5, rely=0.6, anchor=CENTER)
+    
+    def insert(self, letter):
+        self.changeColor('khaki')
+        self.letter.config(text=letter)
+        self.reveal()
+    
+    def changeColor(self, color):
+        if hasattr(self, 'topLeft'):
+            self.topLeft.config(bg=color)
+        if not self.isBlack:
+            self.config(bg=color)
+        if hasattr(self, 'letter'):
+            self.letter.config(bg=color)

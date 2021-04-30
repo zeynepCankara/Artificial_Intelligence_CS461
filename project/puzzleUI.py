@@ -15,24 +15,13 @@ from tkinter import *
 from parsePuzzle import parsePuzzle
 from Cell import Cell
 from datetime import datetime
+from search import search
+import time
+from puzzleID import puzzleID
 
-# Button function. This reveals the letter of each cell
-def showAnswers(boxList):
-    i = 0
-    for cell in puzzleInformation['cells']:
-        if(cell["cellNumber"] != -1):
-            boxList[i].reveal()
-        i += 1
+delay = 1 # Seconds
 
-# Button function. This hides the letter of each cell
-def hideAnswers(boxList):
-    i = 0
-    for cell in puzzleInformation['cells']:
-        if(cell["cellNumber"] != -1):
-            boxList[i].hide()
-        i += 1
-       
-puzzleInformation = parsePuzzle(puzzleID=1)
+puzzleInformation = parsePuzzle(puzzleID)
 
 # creating main tkinter window/toplevel 
 master = Tk()
@@ -65,40 +54,96 @@ for clueNumber, clue in puzzleInformation['downClues'].items():
 
 # Creating each cell of the puzzle with information from parsePuzzle and adding them to grid
 k = 0
-boxList = []
+answers = []
 for cell in puzzleInformation['cells']:
     if(cell["cellNumber"] == -1):
-        boxList.append(Cell(master, isBlack=True))
+        answers.append(Cell(master, isBlack=True))
     else:
         if(cell["cellNumber"] != 0):
             newCell = Cell(master, number=cell["cellNumber"], letter = cell['letter'])
-            boxList.append(newCell)
+            answers.append(newCell)
         else:
             newCell = Cell(master, letter = cell['letter'])
-            boxList.append(newCell)
-    boxList[k].grid(row = (int(k / 5) * 3), column = (k % 5), rowspan = 3)
+            answers.append(newCell)
+    answers[k].grid(row = (int(k / 5) * 3), column = (k % 5), rowspan = 3)
+    answers[k].reveal()
     k += 1
-    
-# Button for showing letter. It uses the showAnswers() method
-button1 = Button(master, bg="white", relief="solid", text = "Click for Anwers", command=lambda: showAnswers(boxList), font="franklin 14")
-button1.grid(row = i + 3, column = 5)
 
-# Button for hidding letter. It uses the hideAnswers() method
-button2 = Button(master, bg="white", relief="solid", text = "Hide the Anwers", command=lambda: hideAnswers(boxList), font="franklin 14")
-button2.grid(row = i + 3, column = 6)
+
+# Creating each cell of the puzzle with information from parsePuzzle and adding them to grid
+k = 0
+solved = []
+for cell in puzzleInformation['cells']:
+    if(cell["cellNumber"] == -1):
+        solved.append(Cell(master, isBlack=True))
+    else:
+        if(cell["cellNumber"] != 0):
+            newCell = Cell(master, number=cell["cellNumber"], letter = cell['letter'])
+            solved.append(newCell)
+        else:
+            newCell = Cell(master, letter = cell['letter'])
+            solved.append(newCell)
+    solved[k].grid(row = (int(k / 5) * 3), column = (k % 5 + 7), rowspan = 3)
+    k += 1
 
 # Group name label
 groupLabel = Label(master, text = ("Group Name: RIDDLER"), font="franklin 14")
-groupLabel.grid(row = 16, column = 2, columnspan = 3, sticky = "e")
+groupLabel.grid(row = 16, column = 9, columnspan = 3, sticky = "e")
 
 # date label
 now = datetime.now()
 dateLabel = Label(master, text = now.strftime("Date : %d-%m-%Y"), font="franklin 14")
-dateLabel.grid(row = 17, column = 2, columnspan = 3, sticky = "e")
+dateLabel.grid(row = 17, column = 9, columnspan = 3, sticky = "e")
 
 # time label
 timeLabel = Label(master, text = now.strftime("Time : %H:%M:%S"), font="franklin 14")
-timeLabel.grid(row = 18, column = 2, columnspan = 3, sticky = "e")
+timeLabel.grid(row = 18, column = 9, columnspan = 3, sticky = "e")
+
+
+def executeOperation(operation, cell, index):
+    if operation['type'] == 'insert':
+        cell.insert(operation['answer'][index])
+    elif operation['type'] == 'update':
+        cell.insert(operation['nextAnswer'][index])
+    else:
+        cell.hide()
+
+def handleOperation(operation):
+    for cell in solved:
+        cell.changeColor('white')
+
+    if operation['type'] == 'goal':
+        for cell in solved:
+            cell.changeColor('pale green')
+    
+    clueNumber = int(operation['domain'][0])
+    if 'd' in operation['domain']:
+        for i in range(0, len(puzzleInformation['cells'])):
+            if puzzleInformation['cells'][i]['cellNumber'] == clueNumber:
+                index = 0
+                while i < 25 and puzzleInformation['cells'][i]['cellNumber'] != -1:
+                    executeOperation(operation, solved[i], index)
+                    i = i + 5
+                    index = index + 1
+                break
+    elif 'a' in operation['domain']:
+        for i in range(0, len(puzzleInformation['cells'])):
+            if puzzleInformation['cells'][i]['cellNumber'] == clueNumber:
+                index = 0
+                while True:
+                    executeOperation(operation, solved[i], index)
+                    index = index + 1
+                    i = i + 1
+                    if i == 25 or puzzleInformation['cells'][i]['cellNumber'] == -1 or i % 5 == 0:
+                        break
+                break
+    master.update()
+
+def handleWithDelay(operation):
+    time.sleep(delay)
+    handleOperation(operation)
+
+master.after(1000, search, handleWithDelay)
 
 mainloop() 
 
