@@ -1,3 +1,5 @@
+from utils import log
+
 # TODO: Add comments
 class Constraint(object):
     def __init__(self, acrossClue, acrosIndex, downClue, downIndex):
@@ -44,7 +46,7 @@ class Constraints(object):
         self.constraints = self.generateConstraints(puzzleInformation)
     
     def generateConstraints(self, puzzleInformation):
-        print('Generating constraints according to puzzle information\n')
+        log('Generating constraints according to puzzle information')
         result = []
         for acrossKey in puzzleInformation['acrossClues'].keys():
             for i in range(0, len(puzzleInformation['cells'])):
@@ -94,7 +96,7 @@ class Constraints(object):
             constraint.applyConstraint(clue, answer, domains)
 
     def shrinkInitialDomains(self, domains):
-        print('Shrinking domains according to crossword constraints\n')
+        log('Shrinking domains according to crossword constraints. Updated Domains:', newLine=False)
         while True:
             allConstraintsAreSatisfied = True
             for constraint in self.constraints:

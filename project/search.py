@@ -1,22 +1,7 @@
 from State import State
 from collections import deque, OrderedDict
 import copy
-
-def log(log):
-    if type(log) == dict:
-        # It is an operation
-        parsedClue = log['clue'].replace('d', ' Down').replace('a', ' Across')
-        if log['type'] == 'insert':
-            print('Candidates for \'' + parsedClue + '\': ' + ', '.join(log['domain']))
-            print('using ->', log['answer'])
-        if log['type'] == 'update':
-            print('undoing', log['prevAnswer'], '-> now using', log['nextAnswer'], 'for', parsedClue)
-        if log['type'] == 'delete':
-            print('Delete', log['answer'], 'from', parsedClue)
-        else:
-            print()
-    else:
-        print(log)
+from utils import log, getClueFromShortVersion
 
 def calculateOperations(prevState, nextState):
     if prevState is None:
@@ -29,7 +14,8 @@ def calculateOperations(prevState, nextState):
             'type': 'insert', 
             'clue': nextList[len(nextState.filledDomains) - 1][0], 
             'answer': nextList[len(nextState.filledDomains) - 1][1],
-            'domain': prevState.domains[nextList[len(nextState.filledDomains) - 1][0]]
+            'domain': prevState.domains[nextList[len(nextState.filledDomains) - 1][0]],
+            'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation)
         }]
 
     if len(nextState.filledDomains) == len(prevState.filledDomains) and len(nextState.filledDomains) != 0: # Last answer is changed
@@ -37,7 +23,8 @@ def calculateOperations(prevState, nextState):
             'type': 'update', 
             'clue': nextList[len(nextState.filledDomains) - 1][0], 
             'prevAnswer': prevList[len(nextState.filledDomains) - 1][0], 
-            'nextAnswer': nextList[len(nextState.filledDomains) - 1][1]
+            'nextAnswer': nextList[len(nextState.filledDomains) - 1][1],
+            'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation)
         }]
 
     if len(nextState.filledDomains) < len(prevState.filledDomains): # Backtrace. Delete items from prevState one by one starting from the end
@@ -47,14 +34,16 @@ def calculateOperations(prevState, nextState):
             operations.append({
                 'type': 'delete', 
                 'clue': prevList[i][0], 
-                'answer': prevList[i][1]
+                'answer': prevList[i][1],
+                'longClue': getClueFromShortVersion(prevList[i][0], nextState.puzzleInformation)
             })
             i = i - 1
         operations.append({
             'type': 'update', 
             'clue': nextList[i][0], 
             'prevAnswer': prevList[i][1], 
-            'nextAnswer': nextList[i][1]
+            'nextAnswer': nextList[i][1],
+            'longClue': getClueFromShortVersion(nextList[i][0], nextState.puzzleInformation)
         })
         return operations
     
@@ -79,7 +68,7 @@ def search(initialState, handleOperation):
 
         for operation in calculateOperations(prevState, currentState):
             handleOperation(operation)
-            log(operation)
+            log(operation, operation['type'] != 'delete')
         
         prevState = currentState
 
@@ -89,7 +78,7 @@ def search(initialState, handleOperation):
             return currentPath
 
         if currentState.isStuck():
-            log('Puzzle is stuck! Start backtracing')
+            log('Puzzle is stuck! Start backtracing', newLine=False)
             continue
 
         for state in currentPath:

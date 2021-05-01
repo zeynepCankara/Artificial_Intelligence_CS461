@@ -16,7 +16,6 @@ from parsePuzzle import parsePuzzle
 from Cell import Cell
 from datetime import datetime
 from search import search
-from puzzleID import puzzleID
 from State import State
 import time
 

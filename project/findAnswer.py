@@ -1,4 +1,5 @@
 from getPossibleAnswers import getPossibleAnswers
+from utils import log
 
 def getAnswersForClue(clue, length, puzzleID):
     # TODO: Find better dummy answers for proper debugging
@@ -44,9 +45,9 @@ def getAnswersForClue(clue, length, puzzleID):
 
     # return dummyAnswers[puzzleID][clue]
 
-    print('Fetching answers for clue:', clue)
+    log('Fetching answers for clue: ' + clue, newLine=False)
     temp = getPossibleAnswers(clue, length)
-    print('Fetched answers:', temp, '\n')
+    log('Fetched answers: ' + temp)
     return temp
     
 
@@ -67,12 +68,12 @@ def getLengthOfClueAnswer(key, isAcross, puzzleInformation):
             return count
 
 def calculateInitialDomains(puzzleInformation, puzzleID):
-    print('Fetching initial domains from internet\n')
+    log('Fetching initial domains from internet')
     domains = {}
     for key, value in puzzleInformation['acrossClues'].items():
         domains[str(key) + 'a'] = getAnswersForClue(value, getLengthOfClueAnswer(key, True, puzzleInformation), puzzleID)
     
     for key, value in puzzleInformation['downClues'].items():
         domains[str(key) + 'd'] = getAnswersForClue(value, getLengthOfClueAnswer(key, False, puzzleInformation), puzzleID)
-    print('All domains are fetched\n')
+    log('All domains are fetched')
     return domains

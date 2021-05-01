@@ -4,6 +4,7 @@ from findAnswer import calculateInitialDomains
 from collections import OrderedDict
 import copy
 from puzzleID import puzzleID
+from utils import log, getClueFromShortVersion
 
 # TODO: Write better comments before submitting the project, my comments' purpose is explaining the code to you (Ahmet)
 class State(object):
@@ -15,6 +16,9 @@ class State(object):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
             self.domains = calculateInitialDomains(self.puzzleInformation, puzzleID)
             self.constraints.shrinkInitialDomains(self.domains)
+            for shortVersion, domain in self.domains.items():
+                log(getClueFromShortVersion(shortVersion, self.puzzleInformation) + ' -> ' + ', '.join(domain), newLine=False)
+            print()
         else:
             self.domains = domains
         self.lastAnswer = ()
