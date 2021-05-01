@@ -47,7 +47,7 @@ def getAnswersForClue(clue, length, puzzleID):
 
     log('Fetching answers for clue: ' + clue, newLine=False)
     temp = getPossibleAnswers(clue, length)
-    log('Fetched answers: ' + temp)
+    log('Fetched answers: ' + ', '.join(temp))
     return temp
     
 
