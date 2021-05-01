@@ -42,10 +42,13 @@ def getAnswersForClue(clue, length, puzzleID):
         }
     }
 
-    # TODO: Get possible answers with specified length for clue
-    return getPossibleAnswers(clue, length)
+    return dummyAnswers[puzzleID][clue]
+
+    print('Fetching answers for clue:', clue)
+    temp = getPossibleAnswers(clue, length)
+    print('Fetched answers:', temp, '\n')
+    return temp
     
-    #return dummyAnswers[puzzleID][clue]
 
 def getLengthOfClueAnswer(key, isAcross, puzzleInformation):
     for i in range(0, len(puzzleInformation['cells'])):
@@ -64,11 +67,12 @@ def getLengthOfClueAnswer(key, isAcross, puzzleInformation):
             return count
 
 def calculateInitialDomains(puzzleInformation, puzzleID):
+    print('Fetching initial domains from internet\n')
     domains = {}
     for key, value in puzzleInformation['acrossClues'].items():
         domains[str(key) + 'a'] = getAnswersForClue(value, getLengthOfClueAnswer(key, True, puzzleInformation), puzzleID)
     
     for key, value in puzzleInformation['downClues'].items():
         domains[str(key) + 'd'] = getAnswersForClue(value, getLengthOfClueAnswer(key, False, puzzleInformation), puzzleID)
-
+    print('All domains are fetched\n')
     return domains

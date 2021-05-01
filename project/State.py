@@ -83,15 +83,3 @@ class State(object):
         clueAnswerPairs = list(filter(lambda x: x['possibleDomainReduction'] != -1,clueAnswerPairs)) # Eliminate impossible clue answer pairs (which will eliminate all possible answers for another domain)
         clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
         return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list
-
-
-def main():
-    """Main body to run the program"""
-    
-    # This path shows correct insertion of answers. Last state will be the solved puzzle
-    resultPath = search()
-    return 0
-
-
-if __name__ == "__main__":
-    main()

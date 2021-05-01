@@ -16,12 +16,14 @@ from parsePuzzle import parsePuzzle
 from Cell import Cell
 from datetime import datetime
 from search import search
-import time
 from puzzleID import puzzleID
+from State import State
+import time
 
-delay = 1 # Seconds
+delay = 0.5 # Seconds
 
-puzzleInformation = parsePuzzle(puzzleID)
+initialState = State()
+puzzleInformation = State.puzzleInformation
 
 # creating main tkinter window/toplevel 
 master = Tk()
@@ -119,8 +121,8 @@ def handleOperation(operation):
             cell.changeColor('pale green')
         return
     
-    clueNumber = int(operation['domain'][0])
-    if 'd' in operation['domain']:
+    clueNumber = int(operation['clue'][0])
+    if 'd' in operation['clue']:
         for i in range(0, len(puzzleInformation['cells'])):
             if puzzleInformation['cells'][i]['cellNumber'] == clueNumber:
                 index = 0
@@ -129,7 +131,7 @@ def handleOperation(operation):
                     i = i + 5
                     index = index + 1
                 break
-    elif 'a' in operation['domain']:
+    elif 'a' in operation['clue']:
         for i in range(0, len(puzzleInformation['cells'])):
             if puzzleInformation['cells'][i]['cellNumber'] == clueNumber:
                 index = 0
@@ -146,7 +148,7 @@ def handleWithDelay(operation):
     time.sleep(delay)
     handleOperation(operation)
 
-master.after(1000, search, handleWithDelay)
+master.after(1000, search, initialState, handleWithDelay)
 
 mainloop() 
 

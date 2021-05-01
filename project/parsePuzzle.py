@@ -66,6 +66,9 @@ def parsePuzzle(puzzleID=False):
         return puzzles[puzzleID]
         
     driver = webdriver.Chrome(ChromeDriverManager().install())
+    
+    print('Parsing puzzle from NYTimes Website\n')
+
     #Go to New York Times Website
     driver.get('https://www.nytimes.com/crosswords/game/mini')
 

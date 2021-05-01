@@ -3,45 +3,65 @@ from collections import deque, OrderedDict
 import copy
 
 def log(log):
-    # For now, I am just printing log to the console
-    # TODO: We should implement functions so that these logs (Like inserting an answer to a clue) can be seen graphically
     if type(log) == dict:
         # It is an operation
-        parsedDomain = log['domain'].replace('d', ' Down').replace('a', ' Across')
+        parsedClue = log['clue'].replace('d', ' Down').replace('a', ' Across')
         if log['type'] == 'insert':
-            print('Insert', log['answer'], 'into', parsedDomain)
+            print('Candidates for \'' + parsedClue + '\': ' + ', '.join(log['domain']))
+            print('using ->', log['answer'])
         if log['type'] == 'update':
-            print('Change', parsedDomain, 'from', log['prevAnswer'], 'to', log['nextAnswer'])
+            print('undoing', log['prevAnswer'], '-> now using', log['nextAnswer'], 'for', parsedClue)
         if log['type'] == 'delete':
-            print('Delete', log['answer'], 'from', parsedDomain)
+            print('Delete', log['answer'], 'from', parsedClue)
+        else:
+            print()
     else:
-        # It is just an informative string
         print(log)
 
 def calculateOperations(prevState, nextState):
-    prevList = list(prevState.items())
-    nextList = list(nextState.items())
-    if len(nextState) > len(prevState): # New answer is inserted
-        return [{'type': 'insert', 'domain': nextList[len(nextState) - 1][0], 'answer': nextList[len(nextState) - 1][1]}]
+    if prevState is None:
+        return []
 
-    if len(nextState) == len(prevState) and len(nextState) != 0: # Last answer is changed
-        return [{'type': 'update', 'domain': nextList[len(nextState) - 1][0], 'prevAnswer': prevList[len(nextState) - 1][0], 'nextAnswer': nextList[len(nextState) - 1][1]}]
+    prevList = list(prevState.filledDomains.items())
+    nextList = list(nextState.filledDomains.items())
+    if len(nextState.filledDomains) > len(prevState.filledDomains): # New answer is inserted
+        return [{
+            'type': 'insert', 
+            'clue': nextList[len(nextState.filledDomains) - 1][0], 
+            'answer': nextList[len(nextState.filledDomains) - 1][1],
+            'domain': prevState.domains[nextList[len(nextState.filledDomains) - 1][0]]
+        }]
 
-    if len(nextState) < len(prevState): # Backtrace. Delete items from prevState one by one starting from the end
-        i = len(prevState) - 1
+    if len(nextState.filledDomains) == len(prevState.filledDomains) and len(nextState.filledDomains) != 0: # Last answer is changed
+        return [{
+            'type': 'update', 
+            'clue': nextList[len(nextState.filledDomains) - 1][0], 
+            'prevAnswer': prevList[len(nextState.filledDomains) - 1][0], 
+            'nextAnswer': nextList[len(nextState.filledDomains) - 1][1]
+        }]
+
+    if len(nextState.filledDomains) < len(prevState.filledDomains): # Backtrace. Delete items from prevState one by one starting from the end
+        i = len(prevState.filledDomains) - 1
         operations = []
-        while i >= len(nextState):
-            operations.append({'type': 'delete', 'domain': prevList[i][0], 'answer': prevList[i][1]})
+        while i >= len(nextState.filledDomains):
+            operations.append({
+                'type': 'delete', 
+                'clue': prevList[i][0], 
+                'answer': prevList[i][1]
+            })
             i = i - 1
-        operations.append({'type': 'update', 'domain': nextList[i][0], 'prevAnswer': prevList[i][1], 'nextAnswer': nextList[i][1]})
+        operations.append({
+            'type': 'update', 
+            'clue': nextList[i][0], 
+            'prevAnswer': prevList[i][1], 
+            'nextAnswer': nextList[i][1]
+        })
         return operations
     
     return []
 
-def search(handleOperation):
+def search(initialState, handleOperation):
     # TODO: We should move this function to another place in order to show resulting puzzle with graphics
-
-    initialState = State()
 
     if initialState.isGoal():
         return [initialState]
@@ -50,18 +70,18 @@ def search(handleOperation):
 
     queue = deque([currentPath])
 
-    prevFilledDomains = OrderedDict()
+    prevState = None
 
     while queue:
         visited = set()
         currentPath = queue.popleft()
         currentState = currentPath[len(currentPath) - 1]
 
-        for operation in calculateOperations(prevFilledDomains, currentState.filledDomains):
+        for operation in calculateOperations(prevState, currentState):
             handleOperation(operation)
             log(operation)
         
-        prevFilledDomains = currentState.filledDomains
+        prevState = currentState
 
         if currentState.isGoal():
             handleOperation({'type': 'goal'})
