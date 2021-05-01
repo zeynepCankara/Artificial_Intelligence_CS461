@@ -9,6 +9,11 @@ stopWords = set(stopwords.words('english'))
 """This function creates tokens to be searched on the web-sites"""
 
 def getSearchedTokens(clue):
+
+    best_token = clue
+    good_tokens = clue.split('"')[1::2]
+    if len(good_tokens) != 0:
+        best_token = good_tokens[0]
     
     punctuationFree = clue.translate(str.maketrans('', '', string.punctuation))
 
@@ -17,15 +22,18 @@ def getSearchedTokens(clue):
 
     tokenNum = len(tokens)
 
-    # for i in range(tokenNum):
-    #     if i != tokenNum - 1:
-    #         tokens.append(tokens[i] + " " + tokens[i + 1])
-    # tokens.append(clue)
+    max = 0
 
     for i in range(tokenNum):
         new_token = tokens[i]
         for j in range(i+1,tokenNum):
             new_token = new_token + " " + tokens[j]
             tokens.append(new_token)
+            if len(new_token) > max and len(good_tokens) == 0:
+                max = len(new_token)
+                best_token = new_token
 
-    return tokens
+    if best_token not in tokens:
+        tokens.append(best_token)
+
+    return [tokens, best_token]

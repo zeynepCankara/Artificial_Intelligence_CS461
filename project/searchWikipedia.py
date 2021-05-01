@@ -6,12 +6,26 @@ from nltk.tokenize import word_tokenize
 
 def searchWikipedia(clue, length): 
 
-    tokens = getSearchedTokens(clue)
+    tokens_and_best = getSearchedTokens(clue)
+    best_token = tokens_and_best[1]
+    tokens = tokens_and_best[0]
 
     results = []
 
     for token in tokens:
-        results = results + wikipedia.search(token)
+        search_results = wikipedia.search(token)
+        results = results + search_results
+        if token == best_token:
+            best_result = search_results[0]
+
+    try:
+        page = wikipedia.page(best_result)
+        content = page.content
+        words = word_tokenize(content)
+        results.extend(words)
+    except:
+        print("Page not found in wiki!\n")
+
 
     allAnswers = []
     lenResults = len(results)
@@ -27,7 +41,13 @@ def searchWikipedia(clue, length):
     allAnswersLength = len(allAnswers)
     i = 0
     while(allAnswersLength > i):
-        if len(allAnswers[i]) != length:
+        if i+1 < allAnswersLength and len(allAnswers[i]) + len(allAnswers[i+1]) == length:
+            allAnswers.append(allAnswers[i]+allAnswers[i+1])
+            allAnswers.pop(i)
+            allAnswers.pop(i)
+            i = i - 1
+            allAnswersLength = allAnswersLength - 2
+        elif len(allAnswers[i]) != length:
             allAnswers.pop(i)
             i = i - 1
             allAnswersLength = allAnswersLength - 1

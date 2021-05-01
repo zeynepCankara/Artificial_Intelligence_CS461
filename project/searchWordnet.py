@@ -9,7 +9,9 @@ acrossClues = {"1": "Removes politely, as a hat", "2": "Rainy month", "3": "___ 
 
 def searchWordnet(clue, length): 
 
-    tokens = getSearchedTokens(clue)
+    tokens_and_best = getSearchedTokens(clue)
+    best_token = tokens_and_best[1]
+    tokens = tokens_and_best[0]
 
     syn = list()
     ant = list()
@@ -29,7 +31,13 @@ def searchWordnet(clue, length):
     allAnswersLength = len(allAnswers)
     i = 0
     while(allAnswersLength > i):
-        if len(allAnswers[i]) != length:
+        if i+1 < allAnswersLength and len(allAnswers[i]) + len(allAnswers[i+1]) == length:
+            allAnswers.append(allAnswers[i]+allAnswers[i+1])
+            allAnswers.pop(i)
+            allAnswers.pop(i)
+            i = i - 1
+            allAnswersLength = allAnswersLength - 2
+        elif len(allAnswers[i]) != length:
             allAnswers.pop(i)
             i = i - 1
             allAnswersLength = allAnswersLength - 1
