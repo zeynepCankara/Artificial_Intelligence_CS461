@@ -14,10 +14,9 @@ def searchWordnet(clue, length):
     ant = list()
     hypo = list()
     hyper = list()
-    hypoPuncFree = list()
-    hyperPuncFree = list()
 
     for token in tokens:
+        synsetlen = len(wordnet.synsets(token))
         for synset in wordnet.synsets(token):
             for lemma in synset.lemmas():
                 str = lemma.name().replace("_", "")
@@ -27,20 +26,23 @@ def searchWordnet(clue, length):
                     str = lemma.antonyms()[0].name().replace("_", "")
                     str = str.replace("-", "")
                     ant.append(str.upper())
-            hypo = hypo + list(set([w for s in synset.closure(lambda s:s.hyponyms()) for w in s.lemma_names()]))
-            hyper = hyper + list(set([w for s in synset.closure(lambda s:s.hypernyms()) for w in s.lemma_names()]))
+            
+        for i in range(synsetlen):
+            hyponymlen = len(wordnet.synsets(token)[i].hyponyms())
+            hypernymlen = len(wordnet.synsets(token)[i].hypernyms())
+            for j in range(hyponymlen):
+                str = wordnet.synsets(token)[i].hyponyms()[j].name().partition(".")[0]
+                str = str.replace("-", "")
+                str = str.replace("_", "")
+                hypo.append(str.upper())
+            for j in range(hypernymlen):
+                str = wordnet.synsets(token)[i].hypernyms()[j].name().partition(".")[0]
+                str = str.replace("-", "")
+                str = str.replace("_", "")
+                hyper.append(str.upper())
+
+    allAnswers = hyper + hypo + syn + ant
     
-    for element in hypo:
-        str = element.replace("_", "")
-        str = str.replace("-", "")
-        hypoPuncFree.append(str.upper())
-
-    for element in hyper:
-        str = element.replace("_", "")
-        str = str.replace("-", "")
-        hyperPuncFree.append(str.upper())
-
-    allAnswers = hyperPuncFree + hypoPuncFree + syn + ant
 
     allAnswersLength = len(allAnswers)
     i = 0
