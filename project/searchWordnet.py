@@ -1,11 +1,8 @@
 import nltk
-from nltk.corpus import wordnet   #Import wordnet from the NLTK
+from nltk.corpus import wordnet #Import wordnet from the NLTK
 from createTokens import getSearchedTokens
 
 #nltk.download('wordnet')
-
-acrossClues = {"1": "Removes politely, as a hat", "2": "Rainy month", "3": "___ Tanden, Biden's pick to lead the O.M.B.", 
-                    "4": "Salad green with a peppery taste", "5": 'Subject of the famous photo "The Blue Marble"'}
 
 def searchWordnet(clue, length): 
 
@@ -15,6 +12,11 @@ def searchWordnet(clue, length):
 
     syn = list()
     ant = list()
+    hypo = list()
+    hyper = list()
+    hypoPuncFree = list()
+    hyperPuncFree = list()
+
     for token in tokens:
         for synset in wordnet.synsets(token):
             for lemma in synset.lemmas():
@@ -25,8 +27,20 @@ def searchWordnet(clue, length):
                     str = lemma.antonyms()[0].name().replace("_", "")
                     str = str.replace("-", "")
                     ant.append(str.upper())
+            hypo = hypo + list(set([w for s in synset.closure(lambda s:s.hyponyms()) for w in s.lemma_names()]))
+            hyper = hyper + list(set([w for s in synset.closure(lambda s:s.hypernyms()) for w in s.lemma_names()]))
+    
+    for element in hypo:
+        str = element.replace("_", "")
+        str = str.replace("-", "")
+        hypoPuncFree.append(str.upper())
 
-    allAnswers = syn + ant
+    for element in hyper:
+        str = element.replace("_", "")
+        str = str.replace("-", "")
+        hyperPuncFree.append(str.upper())
+
+    allAnswers = hyperPuncFree + hypoPuncFree + syn + ant
 
     allAnswersLength = len(allAnswers)
     i = 0
@@ -45,4 +59,5 @@ def searchWordnet(clue, length):
 
     uniqueAnswers = set(allAnswers)
     uniqueAnswerList = list(uniqueAnswers)  #uniqueAnswerList contains each answer only once
+
     return uniqueAnswerList
