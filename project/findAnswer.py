@@ -42,7 +42,7 @@ def getAnswersForClue(clue, length, puzzleID):
         }
     }
 
-    return dummyAnswers[puzzleID][clue]
+    # return dummyAnswers[puzzleID][clue]
 
     print('Fetching answers for clue:', clue)
     temp = getPossibleAnswers(clue, length)
