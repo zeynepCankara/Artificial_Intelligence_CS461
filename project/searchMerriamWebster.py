@@ -1,9 +1,20 @@
 import requests
 import nltk
+import json
 from bs4 import BeautifulSoup
 import string
 from createTokens import getSearchedTokens
 from nltk.tokenize import word_tokenize
+
+def iterdict(d):
+    if isinstance(d, list):
+        for x in d:
+            iterdict(x)
+    elif isinstance(d, dict):
+        for v in d.values():        
+            iterdict(v)
+    elif isinstance(d, str):
+        print(d)
 
 def searchMerriamWebster(clue, length):
     
@@ -14,9 +25,14 @@ def searchMerriamWebster(clue, length):
     allAnswers = []
 
     for token in tokens:
-        request_url = "https://www.merriam-webster.com/dictionary/" + token
-        page = requests.get(request_url)
-        source = page.text
+        webster_url = "https://dictionaryapi.com/api/v3/references/collegiate/json/" + token +"?key=28fc3ab5-65ce-49ed-8878-6b66eddf8ef5"
+        thesaurus_url = "https://dictionaryapi.com/api/v3/references/thesaurus/json/" + token + "?key=33936e00-efa4-47d5-8ef9-b897f7db33d8"
+        response = json.loads(requests.get(request_url).text)
+        
+        iterdict(response)
+        # TODO
+        return
+
         soup = BeautifulSoup(source, 'html.parser')
         for span in soup.find_all("span", class_="ex-sent first-child t no-aq sents"):
             span.decompose()
@@ -60,3 +76,5 @@ def searchMerriamWebster(clue, length):
     uniqueAnswers = set(allAnswers)
     uniqueAnswerList = list(uniqueAnswers)  #uniqueAnswerList contains each answer only once
     return uniqueAnswerList
+
+searchMerriamWebster('dummy', 4)
