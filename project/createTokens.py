@@ -10,8 +10,8 @@ stopWords = set(stopwords.words('english'))
 
 def getSearchedTokens(clue):
 
-    best_token = clue
-    good_tokens = clue.split('"')[1::2]
+    best_token = clue 
+    good_tokens = clue.split('"')[1::2] # find good tokens by searching among quotation marks
     if len(good_tokens) != 0:
         best_token = good_tokens[0]
     
