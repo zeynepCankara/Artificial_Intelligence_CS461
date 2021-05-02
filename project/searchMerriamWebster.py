@@ -70,7 +70,7 @@ def searchMerriamWebster(clue, length):
         results = thesaurus + webster
 
         for result in results:
-            result = re.sub(r'{\w+}|[0-9]+', '', result)
+            result = re.sub(r'{\w+}|[^a-zA-Z]', '', result)
             result = result.replace("\n", " ")
             result = result.replace("\t", " ")
             result = result.replace("_", "")

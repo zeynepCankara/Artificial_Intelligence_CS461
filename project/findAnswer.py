@@ -1,5 +1,8 @@
 from getPossibleAnswers import getPossibleAnswers
 from utils import log
+import string
+import os.path
+from os import path
 
 def getAnswersForClue(clue, length, puzzleID):
     # TODO: Find better dummy answers for proper debugging
@@ -46,9 +49,21 @@ def getAnswersForClue(clue, length, puzzleID):
     # return dummyAnswers[puzzleID][clue]
 
     log('Fetching answers for clue: ' + clue, newLine=False)
-    temp = getPossibleAnswers(clue, length)
-    log('Fetched answers: ' + ', '.join(temp))
-    return temp
+
+    punctuationFreeClue = clue.translate(str.maketrans('', '', string.punctuation))
+    filename = punctuationFreeClue + '.txt'
+    if path.exists(filename):
+        f = open(filename, "r")
+        possible_answers_str = f.read()
+        possible_answers = possible_answers_str.split(',')
+    else:
+        possible_answers = getPossibleAnswers(clue, length)
+        f = open(filename, "w")
+        f.write(','.join(possible_answers))
+        f.close()
+        log('Fetched answers: ' + ', '.join(possible_answers))
+
+    return possible_answers
     
 
 def getLengthOfClueAnswer(key, isAcross, puzzleInformation):
