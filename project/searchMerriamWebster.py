@@ -21,6 +21,31 @@ def iterdict(d):
 
     return answers
 
+def iter_webster(d):
+    answers = []
+    if not isinstance(d, list):
+        return answers
+    for x in d:
+        if isinstance(x, str):
+            answers.append(x)
+        else:
+            answers = answers + x['shortdef']
+    return answers
+
+def iter_thesaurus(d):
+    answers = []
+    if not isinstance(d, list):
+        return answers
+    for x in d:
+        if isinstance(x, str):
+            answers.append(x)
+        else:
+            for syn in x['meta']['syns']:
+                answers = answers + syn
+            for ant in x['meta']['ants']:
+                answers = answers + ant
+    return answers
+
 def searchMerriamWebster(clue, length):
     
     tokens_and_best = getMerriamTokens(clue)
@@ -33,14 +58,14 @@ def searchMerriamWebster(clue, length):
     allAnswers = []
 
     for token in tokens:
-        webster_url = "https://dictionaryapi.com/api/v3/references/collegiate/json/" + token +"?key=28fc3ab5-65ce-49ed-8878-6b66eddf8ef5"
-        thesaurus_url = "https://dictionaryapi.com/api/v3/references/thesaurus/json/" + token + "?key=33936e00-efa4-47d5-8ef9-b897f7db33d8"
+        webster_url = "http://dictionaryapi.com/api/v3/references/collegiate/json/" + token +"?key=28fc3ab5-65ce-49ed-8878-6b66eddf8ef5"
+        thesaurus_url = "http://dictionaryapi.com/api/v3/references/thesaurus/json/" + token + "?key=33936e00-efa4-47d5-8ef9-b897f7db33d8"
         
         response = json.loads(requests.get(thesaurus_url).text)
-        thesaurus = iterdict(response)
+        thesaurus = iter_thesaurus(response)
 
         response = json.loads(requests.get(webster_url).text)
-        webster = iterdict(response)
+        webster = iter_webster(response)
 
         results = thesaurus + webster
 
