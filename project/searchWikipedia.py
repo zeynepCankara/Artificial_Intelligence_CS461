@@ -1,6 +1,7 @@
 import nltk
 import wikipedia
 import string
+import re
 from createTokens import getSearchedTokens
 from nltk.tokenize import word_tokenize
 
@@ -30,6 +31,7 @@ def searchWikipedia(clue, length):
     allAnswers = []
     lenResults = len(results)
     for i in range(lenResults):
+        results[i] = re.sub(r'[0-9]+', '', results[i])
         results[i].replace("_", "")
         results[i].replace("-", "")
         punctuationFree = results[i].translate(str.maketrans('', '', string.punctuation))

@@ -4,7 +4,7 @@ import json
 import re
 from bs4 import BeautifulSoup
 import string
-from createTokens import getSearchedTokens
+from createTokens import getMerriamTokens
 from nltk.tokenize import word_tokenize
 
 answers = []
@@ -17,14 +17,13 @@ def iterdict(d):
         for v in d.values():        
             iterdict(v)
     elif isinstance(d, str):
-        print(d)
         answers.append(d)
 
     return answers
 
 def searchMerriamWebster(clue, length):
     
-    tokens_and_best = getSearchedTokens(clue)
+    tokens_and_best = getMerriamTokens(clue)
     best_token = tokens_and_best[1]
     tokens = tokens_and_best[0]
 
@@ -55,7 +54,6 @@ def searchMerriamWebster(clue, length):
             punctuationFree = punctuationFree.upper()
             allAnswers =  allAnswers + word_tokenize(punctuationFree)
 
-    print(allAnswers)
     allAnswersLength = len(allAnswers)
     i = 0
     while(allAnswersLength > i):
@@ -84,5 +82,3 @@ def searchMerriamWebster(clue, length):
     uniqueAnswers = set(allAnswers)
     uniqueAnswerList = list(uniqueAnswers)  #uniqueAnswerList contains each answer only once
     return uniqueAnswerList
-
-searchMerriamWebster('dummy', 4)
