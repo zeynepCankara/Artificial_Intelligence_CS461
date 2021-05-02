@@ -22,7 +22,7 @@ def calculateOperations(prevState, nextState):
         return [{
             'type': 'update', 
             'clue': nextList[len(nextState.filledDomains) - 1][0], 
-            'prevAnswer': prevList[len(nextState.filledDomains) - 1][0], 
+            'prevAnswer': prevList[len(prevState.filledDomains) - 1][1], 
             'nextAnswer': nextList[len(nextState.filledDomains) - 1][1],
             'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation)
         }]

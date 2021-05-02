@@ -12,6 +12,7 @@
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from utils import log
 
 def parsePuzzle(puzzleID=False):
     """This function opens a browser to get current day's mini puzzle information from the New York Times website
