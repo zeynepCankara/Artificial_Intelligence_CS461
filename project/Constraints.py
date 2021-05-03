@@ -17,9 +17,6 @@ class Constraint(object):
                     count = count + 1
         elif clue == self.downClue and self.acrossClue not in filledDomains.keys():
             acrossChars = list(map(lambda x: x[self.acrossIndex], domains[self.acrossClue]))
-            if answer[self.downIndex] not in acrossChars:
-                # This means filling this clue with specified answer will eliminate all possible answers for different domain, so this answer is definitely false
-                return -1
             for char in acrossChars:
                 if answer[self.downIndex] != char:
                     count = count + 1
@@ -95,7 +92,11 @@ class Constraints(object):
         for constraint in self.findConstraintsForClue(clue):
             constraint.applyConstraint(clue, answer, domains)
 
-    def shrinkInitialDomains(self, domains):
+    def removeConstraintsForClue(self, clue):
+        for constraint in self.findConstraintsForClue(clue):
+            self.constraints.remove(constraint)
+        
+    def shrinkInitialDomains(self, domains, clues):
         log('Shrinking domains according to crossword constraints. Updated Domains:', newLine=False)
         while True:
             allConstraintsAreSatisfied = True
@@ -105,7 +106,7 @@ class Constraints(object):
                 
                 i = 0
                 while i < len(domains[constraint.acrossClue]):
-                    if domains[constraint.acrossClue][i][constraint.acrossIndex] not in downChars:
+                    if domains[constraint.acrossClue][i][constraint.acrossIndex] not in downChars and domains[constraint.acrossClue][i] != clues[constraint.acrossClue]:
                         domains[constraint.acrossClue].remove(domains[constraint.acrossClue][i])
                         allConstraintsAreSatisfied = False
                     else:
@@ -113,7 +114,7 @@ class Constraints(object):
                     
                 i = 0
                 while i < len(domains[constraint.downClue]):
-                    if domains[constraint.downClue][i][constraint.downIndex] not in acrossChars:
+                    if domains[constraint.downClue][i][constraint.downIndex] not in acrossChars and domains[constraint.downClue][i] != clues[constraint.downClue]:
                         domains[constraint.downClue].remove(domains[constraint.downClue][i])
                         allConstraintsAreSatisfied = False
                     else:

@@ -15,7 +15,8 @@ def calculateOperations(prevState, nextState):
             'clue': nextList[len(nextState.filledDomains) - 1][0], 
             'answer': nextList[len(nextState.filledDomains) - 1][1],
             'domain': prevState.domains[nextList[len(nextState.filledDomains) - 1][0]],
-            'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation)
+            'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation),
+            'filledDomains': prevState.filledDomains
         }]
 
     if len(nextState.filledDomains) == len(prevState.filledDomains) and len(nextState.filledDomains) != 0: # Last answer is changed
@@ -24,7 +25,8 @@ def calculateOperations(prevState, nextState):
             'clue': nextList[len(nextState.filledDomains) - 1][0], 
             'prevAnswer': prevList[len(prevState.filledDomains) - 1][1], 
             'nextAnswer': nextList[len(nextState.filledDomains) - 1][1],
-            'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation)
+            'longClue': getClueFromShortVersion(nextList[len(nextState.filledDomains) - 1][0], nextState.puzzleInformation),
+            'filledDomains': prevState.filledDomains
         }]
 
     if len(nextState.filledDomains) < len(prevState.filledDomains): # Backtrace. Delete items from prevState one by one starting from the end
@@ -35,7 +37,8 @@ def calculateOperations(prevState, nextState):
                 'type': 'delete', 
                 'clue': prevList[i][0], 
                 'answer': prevList[i][1],
-                'longClue': getClueFromShortVersion(prevList[i][0], nextState.puzzleInformation)
+                'longClue': getClueFromShortVersion(prevList[i][0], nextState.puzzleInformation),
+                'filledDomains': nextState.filledDomains
             })
             i = i - 1
         operations.append({
@@ -43,7 +46,8 @@ def calculateOperations(prevState, nextState):
             'clue': nextList[i][0], 
             'prevAnswer': prevList[i][1], 
             'nextAnswer': nextList[i][1],
-            'longClue': getClueFromShortVersion(nextList[i][0], nextState.puzzleInformation)
+            'longClue': getClueFromShortVersion(nextList[i][0], nextState.puzzleInformation),
+            'filledDomains': nextState.filledDomains
         })
         return operations
     

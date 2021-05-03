@@ -19,3 +19,23 @@ def getClueFromShortVersion(shortVersion, puzzleInformation):
         return '\'' + puzzleInformation['acrossClues'][int(shortVersion[0])] + '\''
     else:
         return '\'' + puzzleInformation['downClues'][int(shortVersion[0])] + '\''
+
+def getFilledCells(puzzleInformation, filledDomains):
+    cells = set()
+    for domain in filledDomains.keys():
+        i = -2
+        for j in range(0,25):
+            if puzzleInformation['cells'][j]['cellNumber'] == int(domain[0]):
+                i = j
+                break
+        if 'a' in domain:
+            while True:
+                cells.add(i)
+                i = i + 1
+                if i == 25 or puzzleInformation['cells'][i]['cellNumber'] == -1 or i % 5 == 0:
+                    break
+        else:
+            while i < 25 and puzzleInformation['cells'][i]['cellNumber'] != -1:
+                cells.add(i)
+                i = i + 5
+    return list(cells)

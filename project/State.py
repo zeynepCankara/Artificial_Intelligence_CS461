@@ -10,12 +10,17 @@ from utils import log, getClueFromShortVersion
 class State(object):
     # Make puzzleInformation and constraints static variable, since they don't change for a single puzzle (in every State, this information will be same)
     puzzleInformation = parsePuzzle(puzzleID)
-    constraints = Constraints(puzzleInformation)
 
     def __init__(self, domains = False, filledDomains = OrderedDict()):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
-            self.domains = calculateInitialDomains(self.puzzleInformation, puzzleID)
-            self.constraints.shrinkInitialDomains(self.domains)
+            domains = calculateInitialDomains(self.puzzleInformation, puzzleID)
+            self.domains = {}
+            self.found = {}
+            for k, v in domains.items():
+                self.domains[k] = v['domain']
+                self.found[k] = v['isTrue']
+            self.constraints = Constraints(self.puzzleInformation)
+            self.constraints.shrinkInitialDomains(self.domains, self.puzzleInformation['answers'])
             for shortVersion, domain in self.domains.items():
                 log(getClueFromShortVersion(shortVersion, self.puzzleInformation) + ' -> ' + ', '.join(domain), newLine=False)
             print()
@@ -39,10 +44,17 @@ class State(object):
     def fillDomain(self, clue, answer):
         # This function fills the cells corresponding to this clue and update domains according to the answer
         self.filledDomains[clue] = answer
-        State.constraints.reduceDomainsWithAnswer(clue, answer, self.domains)
+        if answer == '':
+            self.constraints.removeConstraintsForClue(clue)
+        else:
+            self.constraints.reduceDomainsWithAnswer(clue, answer, self.domains)
+        # State.constraints.reduceDomainsWithAnswer(clue, answer, self.domains)
         self.lastAnswer = (clue, answer)
 
     def isStuck(self):
+        if self.lastAnswer != () and self.lastAnswer[1] == '' and self.found[self.lastAnswer[0]]:
+            return True
+
         if self.isGoal(): # If it is goal state, return False immediately
             return False
 
@@ -55,7 +67,12 @@ class State(object):
         return True
 
     def isGoal(self):
-        return State.puzzleInformation['answers'] == self.filledDomains
+        isGoal = True
+        for clue, answer in State.puzzleInformation['answers'].items():
+            if clue not in self.filledDomains.keys() or (self.filledDomains[clue] != '' and self.filledDomains[clue] != answer):
+                isGoal = False
+                break
+        return isGoal
 
     def getNewState(self, clueAnswerPair):
         # This function creates a deep copy from the current state and fills a clue with the specified answer in new state. Then return this state
@@ -86,4 +103,8 @@ class State(object):
 
         clueAnswerPairs = list(filter(lambda x: x['possibleDomainReduction'] != -1,clueAnswerPairs)) # Eliminate impossible clue answer pairs (which will eliminate all possible answers for another domain)
         clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
+        clueAnswerPairs.insert(0, {
+                'clue': clue,
+                'answer': ''
+        })
         return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list

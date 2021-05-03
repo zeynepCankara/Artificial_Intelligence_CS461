@@ -66,6 +66,12 @@ def getAnswersForClue(clue, length, puzzleID):
     return possible_answers
     
 
+def determineSuccessfulFetch(key, isAcross, puzzleInformation, alternatives):
+    if isAcross:
+        return puzzleInformation['answers'][str(key) + 'a'] in alternatives
+    else:
+        return puzzleInformation['answers'][str(key) + 'd'] in alternatives
+
 def getLengthOfClueAnswer(key, isAcross, puzzleInformation):
     for i in range(0, len(puzzleInformation['cells'])):
         if puzzleInformation['cells'][i]['cellNumber'] == key:
@@ -86,9 +92,14 @@ def calculateInitialDomains(puzzleInformation, puzzleID):
     log('Fetching initial domains from internet')
     domains = {}
     for key, value in puzzleInformation['acrossClues'].items():
-        domains[str(key) + 'a'] = getAnswersForClue(value, getLengthOfClueAnswer(key, True, puzzleInformation), puzzleID)
+        domains[str(key) + 'a'] = {}
+        domains[str(key) + 'a']['domain'] = getAnswersForClue(value, getLengthOfClueAnswer(key, True, puzzleInformation), puzzleID)
+        domains[str(key) + 'a']['isTrue'] = determineSuccessfulFetch(key, True, puzzleInformation, domains[str(key) + 'a']['domain'])
     
     for key, value in puzzleInformation['downClues'].items():
-        domains[str(key) + 'd'] = getAnswersForClue(value, getLengthOfClueAnswer(key, False, puzzleInformation), puzzleID)
+        domains[str(key) + 'd'] = {}
+        domains[str(key) + 'd']['domain'] = getAnswersForClue(value, getLengthOfClueAnswer(key, False, puzzleInformation), puzzleID)
+        domains[str(key) + 'd']['isTrue'] = determineSuccessfulFetch(key, False, puzzleInformation, domains[str(key) + 'd']['domain'])
+
     log('All domains are fetched')
     return domains

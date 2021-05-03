@@ -18,6 +18,7 @@ from datetime import datetime
 from search import search
 from State import State
 import time
+from utils import getFilledCells
 
 delay = 0.5 # Seconds
 
@@ -101,23 +102,39 @@ timeLabel = Label(master, text = now.strftime("Time : %H:%M:%S"), font="franklin
 timeLabel.grid(row = 18, column = 9, columnspan = 3, sticky = "e")
 
 
-def executeOperation(operation, cell, index):
+def executeOperation(operation, i, index):
     if operation['type'] == 'insert':
-        cell.insert(operation['answer'][index])
-        cell.changeColor('khaki')
+        if operation['answer'] != '':
+            solved[i].insert(operation['answer'][index])
+        else:
+            if i not in getFilledCells(puzzleInformation, operation['filledDomains']):
+                solved[i].insert(' ')
+        solved[i].changeColor('khaki')
     elif operation['type'] == 'update':
-        cell.insert(operation['nextAnswer'][index])
-        cell.changeColor('cyan2')
+        if operation['nextAnswer'] != '':
+            solved[i].insert(operation['nextAnswer'][index])
+        else:
+            if i not in getFilledCells(puzzleInformation, operation['filledDomains']):
+                solved[i].insert(' ')
+        solved[i].changeColor('cyan2')
     else:
-        cell.hide()
+        if operation['answer'] != '':
+            solved[i].hide()
+        else:
+            if i not in getFilledCells(puzzleInformation, operation['filledDomains']):
+                solved[i].hide()
 
 def handleOperation(operation):
     for cell in solved:
         cell.changeColor('white')
 
     if operation['type'] == 'goal':
-        for cell in solved:
-            cell.changeColor('pale green')
+        for i in range(len(solved)):
+            if puzzleInformation['cells'][i]['letter'] != solved[i].letter['text']:
+                solved[i].hide()
+                solved[i].changeColor('white')
+            else:
+                solved[i].changeColor('pale green')
         return
     
     clueNumber = int(operation['clue'][0])
@@ -126,7 +143,7 @@ def handleOperation(operation):
             if puzzleInformation['cells'][i]['cellNumber'] == clueNumber:
                 index = 0
                 while i < 25 and puzzleInformation['cells'][i]['cellNumber'] != -1:
-                    executeOperation(operation, solved[i], index)
+                    executeOperation(operation, i, index)
                     i = i + 5
                     index = index + 1
                 break
@@ -135,7 +152,7 @@ def handleOperation(operation):
             if puzzleInformation['cells'][i]['cellNumber'] == clueNumber:
                 index = 0
                 while True:
-                    executeOperation(operation, solved[i], index)
+                    executeOperation(operation, i, index)
                     index = index + 1
                     i = i + 1
                     if i == 25 or puzzleInformation['cells'][i]['cellNumber'] == -1 or i % 5 == 0:
