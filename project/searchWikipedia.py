@@ -31,7 +31,7 @@ def searchWikipedia(clue, length):
     allAnswers = []
     lenResults = len(results)
     for i in range(lenResults):
-        results[i] = re.sub(r'[0-9]+|[^a-zA-Z]', '', results[i])
+        results[i] = re.sub(r'[0-9]+|[^a-zA-Z ]', '', results[i])
         results[i].replace("_", "")
         results[i].replace("-", "")
         punctuationFree = results[i].translate(str.maketrans('', '', string.punctuation))
