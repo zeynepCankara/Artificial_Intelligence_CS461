@@ -20,7 +20,7 @@ from State import State
 import time
 from utils import getFilledCells
 
-delay = 0.5 # Seconds
+delay = 0 # Seconds
 
 initialState = State()
 puzzleInformation = State.puzzleInformation
@@ -130,11 +130,12 @@ def handleOperation(operation):
 
     if operation['type'] == 'goal':
         for i in range(len(solved)):
-            if puzzleInformation['cells'][i]['letter'] != solved[i].letter['text']:
-                solved[i].hide()
-                solved[i].changeColor('white')
-            else:
-                solved[i].changeColor('pale green')
+            if puzzleInformation['cells'][i]['cellNumber'] != -1:
+                if puzzleInformation['cells'][i]['letter'] != solved[i].letter['text']:
+                    solved[i].hide()
+                    solved[i].changeColor('white')
+                else:
+                    solved[i].changeColor('pale green')
         return
     
     clueNumber = int(operation['clue'][0])
