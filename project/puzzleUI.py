@@ -103,6 +103,7 @@ timeLabel.grid(row = 18, column = 9, columnspan = 3, sticky = "e")
 
 
 def executeOperation(operation, i, index):
+    # Change UI of cell with index i with respect to operation
     if operation['type'] == 'insert':
         if operation['answer'] != '':
             solved[i].insert(operation['answer'][index])
@@ -125,6 +126,7 @@ def executeOperation(operation, i, index):
                 solved[i].hide()
 
 def handleOperation(operation):
+    # UI representation of operation
     for cell in solved:
         cell.changeColor('white')
 

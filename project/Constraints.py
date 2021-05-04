@@ -1,6 +1,5 @@
 from utils import log
 
-# TODO: Add comments
 class Constraint(object):
     def __init__(self, acrossClue, acrosIndex, downClue, downIndex):
         self.acrossClue = acrossClue
@@ -9,6 +8,7 @@ class Constraint(object):
         self.downIndex = downIndex
     
     def getReductionCountForAnswer(self, clue, answer, domains, filledDomains):
+        # Determine how many answers this clue,answer pair reduces
         count = 0
         if clue == self.acrossClue and self.downClue not in filledDomains.keys():
             downChars =  list(map(lambda x: x[self.downIndex], domains[self.downClue]))
@@ -24,6 +24,7 @@ class Constraint(object):
         return count
 
     def applyConstraint(self, clue, answer, domains):
+        # Apply constraints for specified answer (Reduce domains accordingly)
         i = 0
         if clue == self.acrossClue:
             while i < len(domains[self.downClue]):

@@ -27,6 +27,7 @@ def getClueFromShortVersion(shortVersion, puzzleInformation):
         return '\'' + puzzleInformation['downClues'][int(shortVersion[0])] + '\''
 
 def getFilledCells(puzzleInformation, filledDomains):
+    # Get cell indices for filled clues
     cells = set()
     for domain, answer in filledDomains.items():
         if answer == '':

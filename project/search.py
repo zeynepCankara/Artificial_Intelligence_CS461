@@ -54,7 +54,6 @@ def calculateOperations(prevState, nextState):
     return []
 
 def search(initialState, handleOperation):
-    # TODO: We should move this function to another place in order to show resulting puzzle with graphics
 
     if initialState.isGoal():
         return [initialState]
@@ -70,21 +69,25 @@ def search(initialState, handleOperation):
         currentPath = queue.popleft()
         currentState = currentPath[len(currentPath) - 1]
 
+        # Calculate operation and call handleOperation for each one
         for operation in calculateOperations(prevState, currentState):
             handleOperation(operation)
             log(operation, operation['type'] != 'delete')
         
         prevState = currentState
 
+        # If state is goal state, return that state
         if currentState.isGoal():
             handleOperation({'type': 'goal', 'filledDomains': currentState.filledDomains})
             log('Goal state of the puzzle is found!')
             return currentPath
 
+        # If state is stuck, just continue to next path
         if currentState.isStuck():
             log('Puzzle is stuck! Start backtracing', newLine=False)
             continue
 
+        
         for state in currentPath:
             visited.add(state)
         

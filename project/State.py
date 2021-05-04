@@ -3,23 +3,23 @@ from Constraints import Constraints
 from findAnswer import calculateInitialDomains
 from collections import OrderedDict
 import copy
-from puzzleID import puzzleID
 from utils import log, getClueFromShortVersion
 
-# TODO: Write better comments before submitting the project, my comments' purpose is explaining the code to you (Ahmet)
 class State(object):
     # Make puzzleInformation and constraints static variable, since they don't change for a single puzzle (in every State, this information will be same)
-    puzzleInformation = parsePuzzle(puzzleID)
+    puzzleInformation = parsePuzzle()
 
     def __init__(self, domains = False, filledDomains = OrderedDict()):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
-            domains = calculateInitialDomains(self.puzzleInformation, puzzleID)
+            domains = calculateInitialDomains(self.puzzleInformation)
             self.domains = {}
             self.found = {}
             for k, v in domains.items():
                 self.domains[k] = v['domain']
                 self.found[k] = v['isTrue']
             self.constraints = Constraints(self.puzzleInformation)
+
+            #Shrink domains with constraints
             self.constraints.shrinkInitialDomains(self.domains, self.puzzleInformation['answers'])
             for shortVersion, domain in self.domains.items():
                 log(getClueFromShortVersion(shortVersion, self.puzzleInformation) + ' -> ' + ', '.join(domain), newLine=False)
@@ -48,6 +48,7 @@ class State(object):
             self.constraints.removeConstraintsForClue(clue)
         else:
             self.constraints.reduceDomainsWithAnswer(clue, answer, self.domains)
+        
         # State.constraints.reduceDomainsWithAnswer(clue, answer, self.domains)
         self.lastAnswer = (clue, answer)
 
@@ -62,7 +63,8 @@ class State(object):
             if clue not in self.filledDomains.keys(): # There is a clue which is not answered yet, so state is not stucked
                 return False
 
-        # All clues are answered since all of them are present in filledDomains. However, it is not goal state because of the initial check in this function
+        # All clues are answered since all of them are present in filledDomains. 
+        # However, it is not goal state because of the initial check in this function
         # So, this state is definitely stuck
         return True
 
@@ -80,31 +82,40 @@ class State(object):
         answer = clueAnswerPair['answer']
 
         state = copy.deepcopy(self)
+
+        # Fill domain with this answer
         state.fillDomain(clue, answer)
         return state
 
     def getNextStates(self):
         # This function first gets clue with smallest possible answers in its domain and sorts the answers according to the reduction they provide
 
-        # What I mean is for example, if filling 1a with ahmet reduces the domain of 1d by 3 words, it is better than an answer which reduces domain of 1d by 2 words
-        # (For example, if their first letters are intersecting, all words in the domain of 1d (whose first letter is not 'a') will be eliminated)
-        # With this approach, we can reduce the words in domain in the best way so that search will be efficient.
-
+        # Get all unfilled clues
         unfilledClues = list(filter(lambda x: x not in self.filledDomains.keys(), self.domains.keys()))
+
+        # Get the clue with minimum domain
         clue = min(unfilledClues, key = lambda x: len(self.domains[x]))
 
         clueAnswerPairs = []
-        for answer in self.domains[clue]: # For each answer, calculate total reduction
+        # For each answer, calculate total reduction
+        for answer in self.domains[clue]:
             clueAnswerPairs.append({
                 'clue': clue,
                 'answer': answer,
                 'possibleDomainReduction': self.constraints.getTotalReductionForAnswer(clue, answer, self.domains, self.filledDomains)
             })
 
-        clueAnswerPairs = list(filter(lambda x: x['possibleDomainReduction'] != -1,clueAnswerPairs)) # Eliminate impossible clue answer pairs (which will eliminate all possible answers for another domain)
-        clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction']) # Sort the array with respect to total reduction
+        # Eliminate impossible clue answer pairs (which will eliminate all possible answers for another domain)
+        clueAnswerPairs = list(filter(lambda x: x['possibleDomainReduction'] != -1,clueAnswerPairs)) 
+
+        # Sort the array with respect to total reduction
+        clueAnswerPairs.sort(key= lambda x: x['possibleDomainReduction'])
+
+        # Insert dummy answer, if this is inserted, it means that all answers in this domain is tried
         clueAnswerPairs.insert(0, {
                 'clue': clue,
                 'answer': ''
         })
-        return list(map(self.getNewState, clueAnswerPairs)) #For each clue answer pair, get a new state and return the states list
+
+        #For each clue answer pair, get a new state and return the states list
+        return list(map(self.getNewState, clueAnswerPairs))
