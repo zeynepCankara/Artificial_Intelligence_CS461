@@ -6,8 +6,7 @@ def getPossibleAnswers(clue, length):
 
     wikipediaAnswers = searchWikipedia(clue, length)
     merriamAnswers = searchMerriamWebster(clue, length)
-    wordnetAnswers = searchWordnet(clue, length)
     
-    allAnswers = wikipediaAnswers + merriamAnswers + wordnetAnswers
+    allAnswers = wikipediaAnswers + merriamAnswers
 
     return allAnswers

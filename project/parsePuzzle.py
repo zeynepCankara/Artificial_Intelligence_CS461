@@ -148,6 +148,7 @@ def parsePuzzle(puzzleID=False):
                 answers[str(key) + 'd'] = answer
                 break
 
+    driver.quit()
     return {
         'cells': cells,
         'acrossClues': acrossClues,
