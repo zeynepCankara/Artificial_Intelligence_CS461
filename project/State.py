@@ -52,8 +52,8 @@ class State(object):
         self.lastAnswer = (clue, answer)
 
     def isStuck(self):
-        # if self.lastAnswer != () and self.lastAnswer[1] == '' and self.found[self.lastAnswer[0]]:
-        #     return True
+        if self.lastAnswer != () and self.lastAnswer[1] == '' and self.found[self.lastAnswer[0]]:
+            return True
 
         if self.isGoal(): # If it is goal state, return False immediately
             return False

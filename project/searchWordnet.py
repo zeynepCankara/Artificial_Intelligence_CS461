@@ -41,7 +41,7 @@ def searchWordnet(clue, length):
                 str = str.replace("_", "")
                 hyper.append(str.upper())
 
-    allAnswers = hyper + ant
+    allAnswers = syn
     
 
     allAnswersLength = len(allAnswers)
