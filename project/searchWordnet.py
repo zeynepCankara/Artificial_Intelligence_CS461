@@ -6,46 +6,24 @@ from createTokens import getSearchedTokens
 
 def searchWordnet(clue, length): 
 
+    # get the tokens according to clue
     tokens_and_best = getSearchedTokens(clue)
-    best_token = tokens_and_best[1]
     tokens = tokens_and_best[0]
 
-    syn = list()
-    ant = list()
-    hypo = list()
-    hyper = list()
+    allAnswers = list()
 
+    # for each token in tokens get synonyms and add them to syn
     for token in tokens:
-        synsetlen = len(wordnet.synsets(token))
         for synset in wordnet.synsets(token):
             for lemma in synset.lemmas():
                 str = lemma.name().replace("_", "")
                 str = str.replace("-", "")
-                syn.append(str.upper())    #add the synonyms
-                if lemma.antonyms():        #When antonyms are available, add them into the list
-                    str = lemma.antonyms()[0].name().replace("_", "")
-                    str = str.replace("-", "")
-                    ant.append(str.upper())
-            
-        for i in range(synsetlen):
-            hyponymlen = len(wordnet.synsets(token)[i].hyponyms())
-            hypernymlen = len(wordnet.synsets(token)[i].hypernyms())
-            for j in range(hyponymlen):
-                str = wordnet.synsets(token)[i].hyponyms()[j].name().partition(".")[0]
-                str = str.replace("-", "")
-                str = str.replace("_", "")
-                hypo.append(str.upper())
-            for j in range(hypernymlen):
-                str = wordnet.synsets(token)[i].hypernyms()[j].name().partition(".")[0]
-                str = str.replace("-", "")
-                str = str.replace("_", "")
-                hyper.append(str.upper())
-
-    allAnswers = syn
+                allAnswers.append(str.upper())    #add the synonyms
     
 
     allAnswersLength = len(allAnswers)
     i = 0
+    # remove answers which do not satisfiy length constraint
     while(allAnswersLength > i):
         if i+1 < allAnswersLength and len(allAnswers[i]) + len(allAnswers[i+1]) == length: # if two words can combine to create new word the combine
             allAnswers.append(allAnswers[i]+allAnswers[i+1])
@@ -69,6 +47,7 @@ def searchWordnet(clue, length):
             allAnswersLength = allAnswersLength - 1
         i = i + 1
         
+    # convert list to set to remmove duplicates then conver set back to list and return list
     uniqueAnswers = set(allAnswers)
     uniqueAnswerList = list(uniqueAnswers)  #uniqueAnswerList contains each answer only once
 

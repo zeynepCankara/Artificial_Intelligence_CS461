@@ -3,23 +3,10 @@ import nltk
 import json
 import re
 import string
-from createTokens import getMerriamTokens
+from createTokens import getSearchedTokens
 from nltk.tokenize import word_tokenize
 
-answers = []
-
-def iterdict(d):
-    if isinstance(d, list):
-        for x in d:
-            iterdict(x)
-    elif isinstance(d, dict):
-        for v in d.values():        
-            iterdict(v)
-    elif isinstance(d, str):
-        answers.append(d)
-
-    return answers
-
+#Parser for Webster URL response
 def iter_webster(d):
     answers = []
     if not isinstance(d, list):
@@ -31,6 +18,7 @@ def iter_webster(d):
             answers = answers + x['shortdef']
     return answers
 
+#Parser for Thesaurus URL response
 def iter_thesaurus(d):
     answers = []
     if not isinstance(d, list):
@@ -47,8 +35,8 @@ def iter_thesaurus(d):
 
 def searchMerriamWebster(clue, length):
     
-    tokens_and_best = getMerriamTokens(clue)
-    best_token = tokens_and_best[1]
+    #Get the tokens for the specified clue
+    tokens_and_best = getSearchedTokens(clue)
     tokens = tokens_and_best[0]
 
     webster = []
@@ -60,14 +48,15 @@ def searchMerriamWebster(clue, length):
         webster_url = "http://dictionaryapi.com/api/v3/references/collegiate/json/" + token +"?key=28fc3ab5-65ce-49ed-8878-6b66eddf8ef5"
         thesaurus_url = "http://dictionaryapi.com/api/v3/references/thesaurus/json/" + token + "?key=33936e00-efa4-47d5-8ef9-b897f7db33d8"
         
-        response = json.loads(requests.get(thesaurus_url).text)
+        response = json.loads(requests.get(thesaurus_url).text) #loading the content of the Thesaurus webpage
         thesaurus = iter_thesaurus(response)
 
-        response = json.loads(requests.get(webster_url).text)
+        response = json.loads(requests.get(webster_url).text) #loading the content of the Collegiate webpage
         webster = iter_webster(response)
 
-        results = thesaurus + webster
+        results = thesaurus + webster #Merging the results of the Saurus and dictionary parts
 
+        #Unnecessary chars and strings are removed from the results and then tokenize each result in the results list.
         for result in results:
             result = re.sub(r'{\w+}|[^a-zA-Z]', '', result)
             result = result.replace("\n", " ")
@@ -80,6 +69,7 @@ def searchMerriamWebster(clue, length):
 
     allAnswersLength = len(allAnswers)
     i = 0
+    #Remove answers which do not satisfy length constraint and checking other syntax constraints
     while(allAnswersLength > i):
         if i+1 < allAnswersLength and len(allAnswers[i]) + len(allAnswers[i+1]) == length: # if two words can combine to create new word the combine
             allAnswers.append(allAnswers[i]+allAnswers[i+1])
@@ -108,6 +98,7 @@ def searchMerriamWebster(clue, length):
             allAnswersLength = allAnswersLength - 1
         i = i + 1
 
+     #Convert list to set to remove duplicates then conver set back to list and return list
     uniqueAnswers = set(allAnswers)
     uniqueAnswerList = list(uniqueAnswers)  #uniqueAnswerList contains each answer only once
     return uniqueAnswerList

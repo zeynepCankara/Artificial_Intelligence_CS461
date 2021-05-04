@@ -11,18 +11,24 @@ warnings.simplefilter("ignore")
 
 def searchWikipedia(clue, length): 
 
+    #Get the tokens for the specified clue
     tokens_and_best = getSearchedTokens(clue)
     best_token = tokens_and_best[1]
     tokens = tokens_and_best[0]
 
     results = []
 
+    """ Searching wikipedia by using library for each token in
+        the clue and add the result to results list. Try to get
+        the matched page with the specified token.
+    """
     for token in tokens:
         search_results = wikipedia.search(token)
         results = results + search_results
         if token == best_token:
             best_result = search_results[0]
 
+    #Regulating the results obtained from the webpage and tokenize them
     try:
         page = wikipedia.page(best_result)
         content = page.content
@@ -31,7 +37,7 @@ def searchWikipedia(clue, length):
     except:
         print("Page not found in wiki!\n")
 
-
+    #Unnecessary chars and strings are removed from the results and then tokenize each result in the results list.
     allAnswers = []
     lenResults = len(results)
     for i in range(lenResults):
@@ -42,10 +48,9 @@ def searchWikipedia(clue, length):
         punctuationFree = punctuationFree.upper()
         possibleAnswers =  word_tokenize(punctuationFree)
         allAnswers = allAnswers + possibleAnswers # allAnswers (list) may includde same answer more than once
-
-    # un-comment below line to extend the result lists for elements with more than one words
-    #allAnswers = allAnswers + results  
+ 
     
+    #Applying the length constraint to the each word
     allAnswersLength = len(allAnswers)
     i = 0
     while(allAnswersLength > i):
@@ -54,7 +59,8 @@ def searchWikipedia(clue, length):
             i = i - 1
             allAnswersLength = allAnswersLength - 1
         i = i + 1
-               
+
+    #Convert list to set to remove duplicates then conver set back to list and return list    
     uniqueAnswers = set(allAnswers)
     uniqueAnswerList = list(uniqueAnswers)  #uniqueAnswerList contains each answer only once
     return uniqueAnswerList

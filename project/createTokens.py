@@ -20,25 +20,7 @@ def getSearchedTokens(clue):
     tokens = word_tokenize(punctuationFree)             # split the punctiuation free clue to tokens (list)
     tokens = [w for w in tokens if not w.lower() in stopWords]  # remove stopwordss from tokens
 
-    tokenNum = len(tokens)
-
-    max = 0
-
     if best_token not in tokens:
         tokens.append(best_token)
-
-    return [tokens, best_token]
-
-def getMerriamTokens(clue):
-
-    best_token = clue 
-    good_tokens = clue.split('"')[1::2] # find good tokens by searching among quotation marks
-    if len(good_tokens) != 0:
-        best_token = good_tokens[0]
-    
-    punctuationFree = clue.translate(str.maketrans('', '', string.punctuation))
-
-    tokens = word_tokenize(punctuationFree)             # split the punctiuation free clue to tokens (list)
-    tokens = [w for w in tokens if not w.lower() in stopWords]  # remove stopwordss from tokens
 
     return [tokens, best_token]
