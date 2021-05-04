@@ -3,14 +3,17 @@ def log(log, newLine=True):
         # It is an operation
         parsedClue = log['clue'].replace('d', ' Down').replace('a', ' Across')
         if log['type'] == 'insert':
-            if len(log['domain']) == 1 and log['domain'][0] == '':
+            if len(log['domain']) == 0:
                 print('There is no candidate remaining for', log['longClue'], '-> removing constraints for this clue')
             else:
                 print('Candidates for ' + log['longClue'] + ': ' + ', '.join(log['domain']) + ' -> using ' + log['answer'])
         if log['type'] == 'update':
             print('undoing', log['prevAnswer'], '-> now using', log['nextAnswer'], 'for', log['longClue'])
         if log['type'] == 'delete':
-            print('Delete', log['answer'], 'from', log['longClue'])
+            if log['answer'] == '':
+                print('Add constraints for', log['longClue'], 'again because of the backtracking')
+            else:
+                print('Delete', log['answer'], 'from', log['longClue'])
     else:
         print(log)
     if newLine:

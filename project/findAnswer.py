@@ -61,8 +61,7 @@ def getAnswersForClue(clue, length, puzzleID):
         f = open(filename, "w")
         f.write(','.join(possible_answers))
         f.close()
-        log('Fetched answers: ' + ', '.join(possible_answers))
-
+    log('Fetched answers: ' + ', '.join(possible_answers))
     return possible_answers
     
 

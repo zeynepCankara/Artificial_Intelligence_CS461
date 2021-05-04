@@ -20,7 +20,7 @@ from State import State
 import time
 from utils import getFilledCells
 
-delay = 0 # Seconds
+delay = 0.3 # Seconds
 
 initialState = State()
 puzzleInformation = State.puzzleInformation
