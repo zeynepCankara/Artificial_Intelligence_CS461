@@ -2,8 +2,12 @@ import nltk
 import wikipedia
 import string
 import re
+import warnings
 from createTokens import getSearchedTokens
 from nltk.tokenize import word_tokenize
+
+warnings.catch_warnings()
+warnings.simplefilter("ignore")
 
 def searchWikipedia(clue, length): 
 

@@ -97,6 +97,16 @@ def searchMerriamWebster(clue, length):
             allAnswers.pop(i)
             i = i - 1
             allAnswersLength = allAnswersLength - 1
+        elif len(allAnswers[i]) == length + 1 and allAnswers[i][-1] == 'D': # if ends with d then remove d
+            allAnswers.append(allAnswers[i][:-1])
+            allAnswers.pop(i)
+            i = i - 1
+            allAnswersLength = allAnswersLength - 1
+        elif len(allAnswers[i]) == length + 2 and allAnswers[i][-2:] == 'ED': # if ends with ed then remove ed
+            allAnswers.append(allAnswers[i][:-2])
+            allAnswers.pop(i)
+            i = i - 1
+            allAnswersLength = allAnswersLength - 1
         elif len(allAnswers[i]) != length:
             allAnswers.pop(i)
             i = i - 1
