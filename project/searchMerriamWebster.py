@@ -2,7 +2,6 @@ import requests
 import nltk
 import json
 import re
-from bs4 import BeautifulSoup
 import string
 from createTokens import getMerriamTokens
 from nltk.tokenize import word_tokenize
