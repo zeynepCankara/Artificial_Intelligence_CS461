@@ -39,6 +39,6 @@ def getMerriamTokens(clue):
     punctuationFree = clue.translate(str.maketrans('', '', string.punctuation))
 
     tokens = word_tokenize(punctuationFree)             # split the punctiuation free clue to tokens (list)
-    tokens = [w for w in tokens if not w in stopWords]  # remove stopwordss from tokens
+    tokens = [w for w in tokens if not w.lower() in stopWords]  # remove stopwordss from tokens
 
     return [tokens, best_token]
