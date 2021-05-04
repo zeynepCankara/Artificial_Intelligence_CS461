@@ -77,7 +77,7 @@ def search(initialState, handleOperation):
         prevState = currentState
 
         if currentState.isGoal():
-            handleOperation({'type': 'goal'})
+            handleOperation({'type': 'goal', 'filledDomains': currentState.filledDomains})
             log('Goal state of the puzzle is found!')
             return currentPath
 

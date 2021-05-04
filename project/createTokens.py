@@ -24,15 +24,6 @@ def getSearchedTokens(clue):
 
     max = 0
 
-    for i in range(tokenNum):
-        new_token = tokens[i]
-        for j in range(i+1,tokenNum):
-            new_token = new_token + " " + tokens[j]
-            tokens.append(new_token)
-            if len(new_token) > max and len(good_tokens) == 0:
-                max = len(new_token)
-                best_token = new_token
-
     if best_token not in tokens:
         tokens.append(best_token)
 

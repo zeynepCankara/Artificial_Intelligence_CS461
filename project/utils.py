@@ -22,7 +22,9 @@ def getClueFromShortVersion(shortVersion, puzzleInformation):
 
 def getFilledCells(puzzleInformation, filledDomains):
     cells = set()
-    for domain in filledDomains.keys():
+    for domain, answer in filledDomains.items():
+        if answer == '':
+            continue
         i = -2
         for j in range(0,25):
             if puzzleInformation['cells'][j]['cellNumber'] == int(domain[0]):

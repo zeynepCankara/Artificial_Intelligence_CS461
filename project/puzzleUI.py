@@ -131,7 +131,7 @@ def handleOperation(operation):
     if operation['type'] == 'goal':
         for i in range(len(solved)):
             if puzzleInformation['cells'][i]['cellNumber'] != -1:
-                if puzzleInformation['cells'][i]['letter'] != solved[i].letter['text']:
+                if i not in getFilledCells(puzzleInformation, operation['filledDomains']):
                     solved[i].hide()
                     solved[i].changeColor('white')
                 else:
