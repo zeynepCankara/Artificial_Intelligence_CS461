@@ -20,7 +20,7 @@ from State import State
 import time
 from utils import getFilledCells
 
-delay = 0.3 # Seconds
+delay = 0 # Seconds
 
 initialState = State()
 puzzleInformation = State.puzzleInformation
@@ -167,7 +167,19 @@ def handleWithDelay(operation):
     time.sleep(delay)
     handleOperation(operation)
 
-master.after(1000, search, initialState, handleWithDelay)
+def fillPuzzleWithAnswers():
+    filledDomains = {}
+    for foundAnswer in list(filter(lambda x: initialState.found[x], initialState.found)):
+        handleOperation({
+            'type': 'insert', 
+            'clue': foundAnswer, 
+            'answer': puzzleInformation['answers'][foundAnswer]
+        })
+        filledDomains[foundAnswer] = puzzleInformation['answers'][foundAnswer]
+    handleOperation({'type': 'goal', 'filledDomains': filledDomains})
+
+
+master.after(1000, fillPuzzleWithAnswers)
 
 mainloop() 
 

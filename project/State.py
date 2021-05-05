@@ -4,10 +4,11 @@ from findAnswer import calculateInitialDomains
 from collections import OrderedDict
 import copy
 from utils import log, getClueFromShortVersion
+from dummyPuzzles import puzzles
 
 class State(object):
     # Make puzzleInformation and constraints static variable, since they don't change for a single puzzle (in every State, this information will be same)
-    puzzleInformation = parsePuzzle()
+    puzzleInformation = puzzles[1]
 
     def __init__(self, domains = False, filledDomains = OrderedDict()):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
