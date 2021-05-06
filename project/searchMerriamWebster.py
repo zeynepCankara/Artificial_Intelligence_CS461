@@ -45,6 +45,7 @@ def searchMerriamWebster(clue, length):
     allAnswers = []
 
     for token in tokens:
+        token = token.translate(str.maketrans('', '', string.punctuation))
         webster_url = "http://dictionaryapi.com/api/v3/references/collegiate/json/" + token +"?key=28fc3ab5-65ce-49ed-8878-6b66eddf8ef5"
         thesaurus_url = "http://dictionaryapi.com/api/v3/references/thesaurus/json/" + token + "?key=33936e00-efa4-47d5-8ef9-b897f7db33d8"
         

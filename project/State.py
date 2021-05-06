@@ -8,7 +8,7 @@ from dummyPuzzles import puzzles
 
 class State(object):
     # Make puzzleInformation and constraints static variable, since they don't change for a single puzzle (in every State, this information will be same)
-    puzzleInformation = puzzles[1]
+    puzzleInformation = puzzles[5]
 
     def __init__(self, domains = False, filledDomains = OrderedDict()):
         if not domains: # Initial state, so initialize domains and shrink it with constraints
